@@ -140,12 +140,12 @@ def update_user(user_id(new_name,surname)):
             is_premium = %s
             WHERE id = %s
         """
-        
+
         new_name=input("yeni isim gir :")
         new_surname=input("yeni soy isim :")
-        new_age=("yeni yasini gir :")
-        new_is_premium=("premiumlu musun ?")
-        new_balance=("yeni bakiye :")
+        new_age= input("yeni yasini gir :")
+        new_is_premium=input("premiumlu musun ?")
+        new_balance=input("yeni bakiye :")
 
         
     
