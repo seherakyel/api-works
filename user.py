@@ -100,5 +100,26 @@ def add_user(user_name,surname,is_premium,age,balance):
         cursor.close()
         connection.close()
 print(add_user("seher","akyel",1,20,560))
+
+
+def delete_user_by_id(user_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="DELETE FROM user WHERE id=%s"
+        cursor.execute(query,(user_id,))
+        connection.commit()
+        print(f"{user_id} kullanicisi silindi")
+
+    except Exception as e:
+        print("kullanici silenemedi")
+        print(f"hata:{e}")
+        return None
     
+    finally:
+        cursor.close()
+        connection.close()
+print(delete_user_by_id(29))
 
