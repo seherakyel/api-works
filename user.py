@@ -63,4 +63,24 @@ def check_is_premium(user_id):
 check_is_premium(30)
 
 
-#def get_user_full_info_by_id(user_id):
+def get_user_full_info_by_id(user_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT * FROM food_choice.user WHERE id=%s"
+        cursor.execute(query,(user_id,))  
+        user=cursor.fetchone()
+        return user
+    
+    except Exception as e:
+        print("kullanici getirelemedi")
+        print(f"hata:{e}")
+        return 
+    finally:
+        cursor.close()
+        connection.cursor()
+print(get_user_full_info_by_id(29))
+    
+
