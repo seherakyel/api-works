@@ -80,10 +80,25 @@ def get_user_full_info_by_id(user_id):
         return 
     finally:
         cursor.close()
-        connection.cursor()
+        connection.close()
 print(get_user_full_info_by_id(29))
 
-def add_user(user_id):
-    
+def add_user(user_name,surname,is_premium,age,balance):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor = connection.cursor(dictionary=True)
+        query="INSERT INTO user(user_name,surname,is_premium,age,balance) VALUES(%s,%s,%s,%s,%s)"
+        cursor.execute(query,(user_name,surname,is_premium,age,balance))
+        connection.commit()
+        print(f"{ user_name} kullanicisi eklendi")
+    except Exception as e:
+        print("kullanici eklenmedi")
+        print(f"hata:{e}")
+    finally:
+        cursor.close()
+        connection.close()
+print(add_user("seher","akyel",1,20,560))
     
 
