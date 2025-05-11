@@ -22,11 +22,10 @@ def get_user_by_id(user_id): # id ye göre kullanıcı getir
         return None
     try: # hata çıkarsa yakala
         cursor=connection.cursor(dictionary=True)
-        query="SELECT * FROM food_choice.user WHERE id=%s"# users tablosundan sadece id’si eşleşen kullanıcıyı 
+        query = "SELECT user_name,surname FROM food_choice.user WHERE id=%s"# users tablosundan sadece id’si eşleşen kullanıcıyı 
         cursor.execute(query,(user_id,))  # seçer %s kısmı, daha sonra user_id ile doldurulacak ye
         user=cursor.fetchone() # eşleşen bir kullanıcı varsa onu alır
-        print(user)
-        return user
+        return f"{user['user_name']} {user['surname']}"
        
     except Exception as e: # Hata olursa onu e içine kaydet, ben kullanacağım
         print("kullanici getirilemedi")
@@ -36,7 +35,8 @@ def get_user_by_id(user_id): # id ye göre kullanıcı getir
     finally:
         cursor.close()
         connection.close()
-get_user_by_id(29)
+print(get_user_by_id(29))
+
 
 
 def check_is_premium(user_id):
@@ -48,7 +48,7 @@ def check_is_premium(user_id):
         query="SELECT * FROM food_choice.user WHERE id=%s"
         cursor.execute(query,(user_id,))  
         user=cursor.fetchone()
-        
+
         if user and user["is_premium"] == 1:
             print("kullanici premiumludur")
         else:
@@ -61,3 +61,6 @@ def check_is_premium(user_id):
         cursor.close()
         connection.close()
 check_is_premium(30)
+
+
+#def get_user_full_info_by_id(user_id):
