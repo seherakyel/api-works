@@ -48,3 +48,16 @@ def check_is_premium(user_id):
         query="SELECT * FROM food_choice.user WHERE id=%s"
         cursor.execute(query,(user_id,))  
         user=cursor.fetchone()
+        
+        if user and user["is_premium"] == 1:
+            print("kullanici premiumludur")
+        else:
+            print("kullanici premiumlu degildir")
+
+    except Exception as e:
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+check_is_premium(30)
