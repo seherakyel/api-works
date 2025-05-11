@@ -123,3 +123,31 @@ def delete_user_by_id(user_id):
         connection.close()
 print(delete_user_by_id(29))
 
+
+def update_user(user_id(new_name,surname)):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query = """
+        UPDATE user
+        SET user_name = %s,
+            surname = %s,
+            age = %s,
+            balance = %s,
+            is_premium = %s
+            WHERE id = %s
+        """
+        
+        new_name=input("yeni isim gir :")
+        new_surname=input("yeni soy isim :")
+        new_age=("yeni yasini gir :")
+        new_is_premium=("premiumlu musun ?")
+        new_balance=("yeni bakiye :")
+
+        
+    
+
+
