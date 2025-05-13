@@ -1,0 +1,35 @@
+--Create Database
+DROP DATABASE IF EXISTS food_choice;
+CREATE DATABASE food_choice;
+USE food_choice;
+
+-- Create 'user' table
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL,
+    is_premium BOOLEAN DEFAULT 0,
+    age INT,
+    balance INT
+);
+
+-- Create 'food' table
+CREATE TABLE food (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    food_name VARCHAR(100) NOT NULL,
+    stock INT DEFAULT 0,
+    price INT,
+    distance FLOAT
+);
+
+-- Create 'orders' table
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    food_id INT,
+    order_status VARCHAR(50),
+    order_payment VARCHAR(50),
+    order_time DATETIME,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (food_id) REFERENCES food(id) ON DELETE CASCADE
+);
