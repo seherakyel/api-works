@@ -170,6 +170,7 @@ update_user(
     name="Ahmet",
     balance=200
 )
+print(update_user)
 
         
     
