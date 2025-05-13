@@ -20,7 +20,7 @@ def get_food_by_id(food_id): # belirli id ye göre yemke getirir
     connection=mysql.connector.connect(**CONFIG) # veritabanına bağlanır 
     if not connection: # bağlantı başarısızsa 
         return None # hiçbir şey döndürmez
-    try:
+    try: # hataları yakalamak için deneme bloğu başlar 
         cursor=connection.cursor(dictionary=True) # yemek tablosunu sözlük olarak getirir
         query = "SELECT food_name FROM food_choice.food WHERE id=%s" # belirli id li yemeği seçen sql sorgusu 
         cursor.execute(query,(food_id,))  # sorguyu çalıştırır %s yerine food_id  gelir
@@ -35,6 +35,70 @@ def get_food_by_id(food_id): # belirli id ye göre yemke getirir
         cursor.close() # cursor kapatılır
         connection.close() # veritabanı bağlantısı kapatılır
 print(get_food_by_id(28)) # idsi 28 olan yemeğin adını yazdırır
+
+
+
+def get_food_full_info_by_id(food_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT * FROM food_choice.food WHERE id=%s"
+        cursor.execute(query,(food_id,))
+        food=cursor.fetchone()
+        return food
+    except Exception as e:
+        print("yemek getirilemedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(get_food_full_info_by_id(28))
+
+
+
+def add_food(food_name,stock,price,distance):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="INSERT INTO food(food_name,stock,price,distance) VALUES(%s,%s,%s,%s)"
+        cursor.execute(query,(food_name,stock,price,distance))
+        connection.commit()
+        print(f"{food_name} yemeği eklendi")
+    except Exception as e:
+        print("yemegi getirilemedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(add_food("pilav",5,400,1.5)) 
+
+
+
+def delete_food_by_id(food_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="DELETE FROM food WHERE id=%s"
+        cursor.execute(query,(food_id,))
+        connection.commit()
+        print(f"{food_id} id'li yemek silindi")
+    except Exception as e:
+        print("yemek silinmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(delete_food_by_id(28))
+    
 
 
     
