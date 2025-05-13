@@ -98,7 +98,50 @@ def delete_food_by_id(food_id):
         cursor.close()
         connection.close()
 print(delete_food_by_id(28))
-    
+
+
+def update_food(food_id,food_name=None,stock=None,price=None,distance=None):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+
+        update_fields={
+
+            "food_name":food_name,
+            "stock":stock,
+            "price":price,
+            "distance":distance,           
+        }
+        fields = [f"{key} = %s" for key, value in update_fields.items() if value is not None]
+        values=[value for key,value in update_fields.items() if value is not None]
+
+        if not fields:
+            print("güncellemek için alan verilmedi")
+            return None
+        
+        query=f"UPDATE food SET {','.join(fields)} WHERE id=%s"     
+        values.append(food_id)
+        cursor.execute(query,values)
+        connection.commit()
+        print(f"{food_id} kullanicisi güncellendi")
+    except Exception as e:
+        print("kullanici güncellenemedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+update_food(
+    food_id=34,
+    food_name="kebab",
+    stock=13,
+    price=250,
+    distance=1.5   
+)
+print(update_food)
+
 
 
     

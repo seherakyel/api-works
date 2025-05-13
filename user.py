@@ -125,7 +125,7 @@ def delete_user_by_id(user_id):
 print(delete_user_by_id(29))
 
 
-def update_user(user_id,name=None,surname=None,is_premium=None,age=None,balance=None):
+def update_user(user_id,user_name=None,surname=None,is_premium=None,age=None,balance=None):
     connection=mysql.connector.connect(**CONFIG)
     if not connection:
         return None
@@ -135,29 +135,24 @@ def update_user(user_id,name=None,surname=None,is_premium=None,age=None,balance=
 
         update_fields={
 
-            "name":name,
+            "user_name":user_name,
             "surname":surname,
             "is_premium":is_premium,
             "age":age,
-            "balance":balance
-        }
-
-        fields = {key: value for key, value in update_fields.items() if value is not None}
-
-        values=[value for value in update_fields.values() if value is not None]
+            "balance":balance            
+        }      
+        fields = [f"{key} = %s" for key, value in update_fields.items() if value is not None]
+        values=[value for key,value in update_fields.items() if value is not None]
 
         if not fields:
             print("güncellemek için alan verilmedi")
             return None
         
         query=f"UPDATE user SET {','.join(fields)} WHERE id=%s"
-        
         values.append(user_id)
         cursor.execute(query,values)
         connection.commit()
-
         print(f"{user_id} kullanicisi güncellendi")
-
     except Exception as e:
         print("kullanici güncellenemedi")
         print(f"hata:{e}")
@@ -166,8 +161,11 @@ def update_user(user_id,name=None,surname=None,is_premium=None,age=None,balance=
         cursor.close()
         connection.close()
 update_user(
-    user_id=1,
-    name="Ahmet",
+    user_id=52,
+    user_name="Ahmet",
+    surname="doğan",
+    is_premium=1,
+    age=36,
     balance=200
 )
 print(update_user)
