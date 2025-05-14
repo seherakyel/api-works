@@ -40,7 +40,7 @@ print(get_user_by_id(29))
 
 
 
-def check_is_premium(user_id):
+def is_premium(user_id):
     connection = mysql.connector.connect(**CONFIG) 
     if not connection: 
         return None
@@ -61,7 +61,7 @@ def check_is_premium(user_id):
     finally:
         cursor.close()
         connection.close()
-check_is_premium(30)
+is_premium(30)
 
 
 def get_user_full_info_by_id(user_id):
