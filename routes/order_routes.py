@@ -59,8 +59,6 @@ async def delete_order_by_id_enpoint(order_id: int):
         raise HTTPException(status_code=500, detail="sipariş silinemedi")
     
 
-
-
 # Güncelleme isteğinde yalnızca değişecek alanları göndereceğiz; bu
 # yüzden hepsi Optional. order_id URL’den, diğer alanlar body’den gelir
 class UpdateOrder(BaseModel):
