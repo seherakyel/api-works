@@ -166,6 +166,28 @@ print(list_all_foods())
 
 
 
+def get_stock_by_food_id(food_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT stock FROM food_choice.food WHERE id=%s"
+        cursor.execute(query,(food_id,))
+        result = cursor.fetchone()
+        return result["stock"] 
+    except Exception as e:
+        print("stok bulunamadi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+# print(get_stock_by_food_id(3))
+
+
+
+
 
     
 

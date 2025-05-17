@@ -17,7 +17,7 @@ CREATE TABLE user (
 CREATE TABLE food (
     id INT AUTO_INCREMENT PRIMARY KEY,
     food_name VARCHAR(100) NOT NULL,
-    stock INT DEFAULT 0,
+    stock INT ,
     price INT,
     distance FLOAT
 );
