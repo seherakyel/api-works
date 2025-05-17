@@ -102,3 +102,24 @@ def list_all_orders():
         cursor.close()
         connection.close()
 print(list_all_orders())
+
+
+
+def get_orders_by_id(user_id):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query = "SELECT * FROM food_choice.orders WHERE user_id = %s"
+        cursor.execute(query,(user_id,))
+        orders = cursor.fetchall() 
+        return {f"[user_name]"}
+    except Exception as e:
+        print("kullanıcya göre siparis getirilmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(get_orders_by_id(4))
