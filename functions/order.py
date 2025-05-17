@@ -114,7 +114,7 @@ def get_orders_by_id(user_id):
         query = "SELECT * FROM food_choice.orders WHERE user_id = %s"
         cursor.execute(query,(user_id,))
         orders = cursor.fetchall() 
-        return {f"[user_name]"}
+        return orders
     except Exception as e:
         print("kullanıcya göre siparis getirilmedi")
         print(f"hata:{e}")

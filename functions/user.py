@@ -100,7 +100,7 @@ def add_user(user_name,surname,is_premium,age,balance):
     finally:
         cursor.close()
         connection.close()
-print(add_user("seher","akyel",1,20,560))
+#print(add_user("seher","akyel",1,20,560))
 
 
 def delete_user_by_id(user_id):
