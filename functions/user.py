@@ -170,6 +170,30 @@ update_user(
 )
 print(update_user)
 
+
+
+def list_all_users():
+    connection = mysql.connector.connect(**CONFIG) #veritabanına giriş yapar
+    if not connection: # yani veritabanına bağlanamamışsa, ne yapılacağını kontrol eder
+        return None
+    try: # hata çıkarsa yakala
+        cursor=connection.cursor(dictionary=True)
+        query = "SELECT*FROM food_choice.user"# users tablosundan tüm kullanıcıyı görüntüle
+        cursor.execute(query,)
+        return cursor.fetchall() #tüm kullanıcıları toplar
+
+    except Exception as e:
+        print("kullanici listelenmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(list_all_users())
+
+#connection.commit() “veritabanındaki değişiklikleri kaydet” anlamına gelir ve sadece INSERT, UPDATE, DELETE gibi işlemlerden sonra kullanılır SELECTte kullanılmaz
+
+
         
     
 
