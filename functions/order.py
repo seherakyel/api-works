@@ -83,3 +83,22 @@ def update_order(order_id, new_status, new_payment):
         cursor.close()
         connection.close()
 print(2,"pending","cash")
+
+
+def list_all_orders():
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT * FROM food_choice.orders"
+        cursor.execute(query,)
+        return cursor.fetchall()
+    except Exception as e:
+        print("sipariş listelenemedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(list_all_orders())
