@@ -196,9 +196,9 @@ def decrease_stock_by_food_name(food_name, amount):
         query = "UPDATE food SET stock = stock - %s WHERE food_name = %s AND stock >= %s"
         cursor.execute(query, (amount, food_name, amount))
         connection.commit()
-        return f"{food_name} stoktan {amount} adet düşüldü."
+        return f"{food_name} stoktan {amount} adet azaldi."
     except Exception as e:
-        print(f"Hata oluştu: {e}")
+        print(f"hata {e}")
         return None
     finally:
         cursor.close()
