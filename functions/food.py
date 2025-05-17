@@ -144,5 +144,28 @@ print(update_food)
 
 
 
+def list_all_foods():
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT*FROM food_choice.food"
+        cursor.execute(query,)
+        return cursor.fetchall()
+    
+    except Exception as e:
+        print("yemekler listelenmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(list_all_foods())
+
+
+
+
+
     
 
