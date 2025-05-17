@@ -22,7 +22,7 @@ def get_order_by_id(order_id):
     connection = mysql.connector.connect(**CONFIG)
     try:
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM orders")
+        query="SELECT * FROM food_choice.orders WHERE id=%s"
         results = cursor.fetchall()
         for order in results:
             print(order)
