@@ -187,6 +187,28 @@ def get_stock_by_food_id(food_id):
 
 
 
+def decrease_stock_by_food_name(food_name, amount):
+    connection = mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor = connection.cursor()
+        query = "UPDATE food SET stock = stock - %s WHERE food_name = %s AND stock >= %s"
+        cursor.execute(query, (amount, food_name, amount))
+        connection.commit()
+        return f"{food_name} stoktan {amount} adet düşüldü."
+    except Exception as e:
+        print(f"Hata oluştu: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+print(decrease_stock_by_food_name("Pilav",5))
+
+
+
+
+
 
 
     
