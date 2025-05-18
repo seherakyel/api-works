@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from functions.order import (
-    get_order_by_id,add_order,delete_order_by_id,update_order
+    get_order_by_id,add_order,delete_order_by_id,update_order,list_all_orders
 )
 
 router = APIRouter()
@@ -89,6 +89,19 @@ async def update_order_by_id_endpoint(order_id: int, order: UpdateOrder):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception: # beklenmeyen hatalar
         raise HTTPException(status_code=500, detail="sipariş güncellenemedi")
+    
+
+
+
+@router.get("/list_orders")
+async def list_all_orders_endpoint(order:list):
+    try:
+        list_all_orders()
+        return {"message":"siparis listesi olusturuldu"}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="siparis listesi olusturulmadi")
 
     
 

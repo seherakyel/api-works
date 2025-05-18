@@ -104,7 +104,7 @@ async def update_user_endpoint(user: UpdateUser): # Gelen veri, UpdateUser model
 
 
 @router.get("/list_users")
-async def list_all_foods_endpoint(user:list):
+async def list_all_users_endpoint(user:list):
     try:
         list_all_users()
         return {"message":"kullanici listesi olusturuldu"}
