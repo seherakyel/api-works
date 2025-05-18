@@ -136,3 +136,24 @@ update_company(
     description="JBXANDK"
 )
 #print(update_company)
+
+
+
+def list_all_company():
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="SELECT*FROM food_choice.company"
+        cursor.execute(query,)
+        return cursor.fetchall()
+    
+    except Exception as e:
+        print("isletme listelenmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+#print(list_all_company())
