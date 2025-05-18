@@ -36,3 +36,24 @@ def create_company(owner_id, company_name, description):
         cursor.close()
         connection.close()
 #print(create_company(1,"b","A"))
+
+
+
+def delete_company_by_id(company_id):
+    connection = mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="DELETE FROM food WHERE id=%s"
+        cursor.execute(query,(company_id,))
+        connection.commit()
+        print(f"{company_id} id'li sirket silindi")
+    except Exception as e:
+        print("sirket silinmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+#print(delete_company_by_id(2))
