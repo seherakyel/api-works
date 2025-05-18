@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from functions.food import (
-    add_food, get_food_by_id, delete_food_by_id, get_food_full_info_by_id, update_food
+    add_food, get_food_by_id, delete_food_by_id, get_food_full_info_by_id, update_food,list_all_foods
 )
 
 router = APIRouter()
@@ -89,6 +89,21 @@ async def update_food_endpoint(food: update_food): # Gelen veri, UpdateUser mode
         return {"message": " yemek güncellendi"} # İşlem başarılıysa bu mesaj dönülür
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Hata: {str(e)}")
+    
+
+
+
+@router.get("/list_food")
+async def list_all_foods_endpoint(food:list):
+    try:
+        list_all_foods()
+        return {"message":"yemek listesi olusturuldu"}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="yemek listesi olusturulmadi")
+
+        
 
 
 

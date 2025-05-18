@@ -34,7 +34,7 @@ def get_food_by_id(food_id): # belirli id ye göre yemke getirir
     finally:
         cursor.close() # cursor kapatılır
         connection.close() # veritabanı bağlantısı kapatılır
-print(get_food_by_id(28)) # idsi 28 olan yemeğin adını yazdırır
+#print(get_food_by_id(28)) # idsi 28 olan yemeğin adını yazdırır
 
 
 
@@ -55,7 +55,7 @@ def get_food_full_info_by_id(food_id):
     finally:
         cursor.close()
         connection.close()
-print(get_food_full_info_by_id(28))
+#print(get_food_full_info_by_id(28))
 
 
 
@@ -76,7 +76,7 @@ def add_food(food_name,stock,price,distance):
     finally:
         cursor.close()
         connection.close()
-print(add_food("pilav",5,400,1.5)) 
+#print(add_food("pilav",5,400,1.5)) 
 
 
 
@@ -97,7 +97,7 @@ def delete_food_by_id(food_id):
     finally:
         cursor.close()
         connection.close()
-print(delete_food_by_id(28))
+#print(delete_food_by_id(28))
 
 
 def update_food(food_id,food_name=None,stock=None,price=None,distance=None):
@@ -140,7 +140,7 @@ update_food(
     price=250,
     distance=1.5   
 )
-print(update_food)
+#print(update_food)
 
 
 
@@ -161,7 +161,7 @@ def list_all_foods():
     finally:
         cursor.close()
         connection.close()
-print(list_all_foods())
+#print(list_all_foods())
 
 
 
@@ -203,7 +203,7 @@ def decrease_stock_by_food_name(food_name, amount):
     finally:
         cursor.close()
         connection.close()
-print(decrease_stock_by_food_name("Pilav",5))
+#print(decrease_stock_by_food_name("Pilav",5))
 
 
 

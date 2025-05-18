@@ -30,7 +30,7 @@ def get_order_by_id(order_id):
     finally:
         cursor.close()
         connection.close()
-print(get_order_by_id(2))
+#print(get_order_by_id(2))
 
 
 
@@ -48,7 +48,7 @@ def add_order(user_id, food_id, status, payment):
     finally:
         cursor.close()
         connection.close()
-print(add_order(1,2,"completed","online"))
+#print(add_order(1,2,"completed","online"))
 
 
 
@@ -63,7 +63,7 @@ def delete_order_by_id(order_id):
     finally:
         cursor.close()
         connection.close()
-print(get_order_by_id(1))
+#print(get_order_by_id(1))
 
 
 
@@ -82,7 +82,7 @@ def update_order(order_id, new_status, new_payment):
     finally:
         cursor.close()
         connection.close()
-print(2,"pending","cash")
+#print(2,"pending","cash")
 
 
 def list_all_orders():
@@ -101,7 +101,7 @@ def list_all_orders():
     finally:
         cursor.close()
         connection.close()
-print(list_all_orders())
+#print(list_all_orders())
 
 
 
@@ -122,4 +122,4 @@ def get_orders_by_id(user_id):
     finally:
         cursor.close()
         connection.close()
-print(get_orders_by_id(4))
+#print(get_orders_by_id(4))
