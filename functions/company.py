@@ -57,3 +57,5 @@ def delete_company_by_id(company_id):
         cursor.close()
         connection.close()
 #print(delete_company_by_id(2))
+
+
