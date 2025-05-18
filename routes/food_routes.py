@@ -106,7 +106,7 @@ async def list_all_foods_endpoint(food:list):
 
 
 
-@router.get("stock_food")
+@router.get("/stock_food")
 async def get_stock_by_food_id_endpoint(food_id:int):
     try:
         stock = get_stock_by_food_id(food_id)
