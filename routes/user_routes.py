@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from functions.user import (
-    add_user, get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user
+    add_user, get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user,list_all_users
 )
 
 router = APIRouter()
@@ -102,4 +102,14 @@ async def update_user_endpoint(user: UpdateUser): # Gelen veri, UpdateUser model
 
 
 
+
+@router.get("/list_users")
+async def list_all_foods_endpoint(user:list):
+    try:
+        list_all_users()
+        return {"message":"kullanici listesi olusturuldu"}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="kullanici listesi olusturulmadi")
 
