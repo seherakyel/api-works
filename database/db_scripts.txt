@@ -35,8 +35,8 @@ CREATE TABLE orders (
 );
 
 
--- Create 'boss' table
-CREATE TABLE boss (
+-- Create 'employee' table
+CREATE TABLE employee (
     id INT AUTO_INCREMENT PRIMARY KEY,     
     mail VARCHAR(255) NOT NULL UNIQUE,     
     password INT NOT NULL         
