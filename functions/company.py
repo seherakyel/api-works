@@ -155,3 +155,5 @@ def list_all_company():
         cursor.close()
         connection.close()
 #print(list_all_company())
+
+
