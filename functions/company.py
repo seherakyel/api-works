@@ -97,3 +97,42 @@ def get_company_by_id(company_id):
         cursor.close() # cursor kapatılır
         connection.close() # veritabanı bağlantısı kapatılır
 #print(get_company_by_id(17))
+
+
+
+def update_company(company_id,company_name=None,description=None):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        update_fields={
+            "company_name":company_name,
+            "description":description,
+                   
+        }
+        fields = [f"{key} = %s" for key, value in update_fields.items() if value is not None]
+        values=[value for key,value in update_fields.items() if value is not None]
+
+        if not fields:
+            print("güncellemek için alan verilmedi")
+            return None
+        
+        query=f"UPDATE company SET {','.join(fields)} WHERE id=%s"     
+        values.append(company_id)
+        cursor.execute(query,values)
+        connection.commit()
+        print(f"{company_id} isletme güncellendi")
+    except Exception as e:
+        print("isletme güncellenemedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+update_company(
+    company_id=25,
+    company_name="sjdhıa",
+    description="JBXANDK"
+)
+#print(update_company)
