@@ -5,7 +5,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from functions.food import (
-    add_food, get_food_by_id, delete_food_by_id, get_food_full_info_by_id, update_food,list_all_foods
+    add_food, get_food_by_id, delete_food_by_id, get_food_full_info_by_id, update_food,list_all_foods,get_stock_by_food_id,
+    decrease_stock_by_food_name
 )
 
 router = APIRouter()
@@ -103,7 +104,42 @@ async def list_all_foods_endpoint(food:list):
     except Exception as e:
         raise HTTPException(status_code=500, detail="yemek listesi olusturulmadi")
 
-        
+
+
+@router.get("stock_food")
+async def get_stock_by_food_id_endpoint(food_id:int):
+    try:
+        stock = get_stock_by_food_id(food_id)
+        if stock>0:
+            return{"message":"{stock} adet var"}
+        else:
+            return{"message":"stokta yok"}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="yemek stogu olusturulmadi")    
+
+
+
+
+@router.put("/decrease_stock")   
+async def decrease_stock_by_food_name_endpoint(food_name:str, amount:int):
+    try:
+        stock=decrease_stock_by_food_name(food_name,amount)
+        if stock:
+            return{"message":{stock}}
+        else:
+            return{"message":"stok güncellenmedi ya da yeterli sayida yok"}
+
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="hata olustu stok guncellenmedi")            
+
+
+
+
+
 
 
 
