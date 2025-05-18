@@ -59,3 +59,21 @@ def delete_company_by_id(company_id):
 #print(delete_company_by_id(2))
 
 
+def add_company( company_name, description):
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor=connection.cursor(dictionary=True)
+        query="INSERT INTO company(company_name, description) VALUES(%s,%s)"
+        cursor.execute(query,( company_name, description,))
+        connection.commit()
+        print(f"{company_name} sirketi eklendi")
+    except Exception as e:
+        print("sirket eklenmedi")
+        print(f"hata:{e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+#print(add_company("aaja","ckJSO"))
