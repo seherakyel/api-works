@@ -18,14 +18,14 @@ is_db_connected()
 
 
 
-def create_company(owner_id, company_name, description):
+def create_company(company_id, company_name, description):
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
         return None
     try:
         cursor = connection.cursor()
         query = """INSERT INTO company(owner_id, company_name, description) VALUES (%s, %s, %s)"""
-        values = (owner_id,company_name,description)
+        values = (company_id,company_name,description)
         cursor.execute(query, values)
         connection.commit()
         print("sirket  oluşturuldu")
@@ -87,8 +87,8 @@ def get_company_by_id(company_id):
         cursor=connection.cursor(dictionary=True) 
         query = "SELECT company_name FROM food_choice.company WHERE id=%s" 
         cursor.execute(query,(company_id,))  # sorguyu çalıştırır %s yerine company_id  gelir
-        user=cursor.fetchone() # eşleşen bir kullanıcı varsa onu alır
-        return f"{user['company_name']}" #
+        company=cursor.fetchone() # eşleşen bir kullanıcı varsa onu alır
+        return f"{['company_name']}" 
     except Exception as e: # eğer hata olursa hatayı e nin içine kaydet 
         print("sirket getirilemedi") # hata mesajı yazdırlır 
         print(f"hata:{e}") # hatanın kendisini yazdırılır
@@ -120,9 +120,9 @@ def update_company(company_id,company_name=None,description=None):
         values.append(company_id)
         cursor.execute(query,values)
         connection.commit()
-        print(f"{company_id} isletme güncellendi")
+        print(f"{company_id} sirket güncellendi")
     except Exception as e:
-        print("isletme güncellenemedi")
+        print("sirket güncellenemedi")
         print(f"hata:{e}")
         return None
     finally:
@@ -148,13 +148,16 @@ def list_all_company():
         return cursor.fetchall()
     
     except Exception as e:
-        print("isletme listelenmedi")
+        print("sirket listelenmedi")
         print(f"hata:{e}")
         return None
     finally:
         cursor.close()
         connection.close()
 #print(list_all_company())
+
+
+
 
 
 
