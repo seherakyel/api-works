@@ -19,10 +19,10 @@ is_db_connected()
 
 
 def create_company(owner_id, company_name, description):
-    connection = None
-    cursor = None  
+    connection = mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
     try:
-        connection = mysql.connector.connect(**CONFIG)
         cursor = connection.cursor()
         query = """INSERT INTO company (owner_id, company_name, description) VALUES (%s, %s, %s)"""
         values = (owner_id, company_name, description)
@@ -31,9 +31,8 @@ def create_company(owner_id, company_name, description):
         print("sirket  oluşturuldu")
     except Exception as e:
         print("Hata oluştu:", e)
+        return None
     finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-print(create_company(6,"b","A"))
+        cursor.close()
+        connection.close()
+#print(create_company(1,"b","A"))
