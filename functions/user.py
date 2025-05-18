@@ -82,7 +82,7 @@ def get_user_full_info_by_id(user_id):
     finally:
         cursor.close()
         connection.close()
-print(get_user_full_info_by_id(29))
+#print(get_user_full_info_by_id(29))
 
 def add_user(user_name,surname,is_premium,age,balance):
     connection=mysql.connector.connect(**CONFIG)

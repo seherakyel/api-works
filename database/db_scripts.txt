@@ -33,3 +33,11 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (food_id) REFERENCES food(id) ON DELETE CASCADE
 );
+
+
+-- Create 'boss' table
+CREATE TABLE boss (
+    id INT AUTO_INCREMENT PRIMARY KEY,     
+    mail VARCHAR(255) NOT NULL UNIQUE,     
+    password INT NOT NULL         
+);
