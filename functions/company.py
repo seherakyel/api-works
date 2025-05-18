@@ -24,8 +24,8 @@ def create_company(owner_id, company_name, description):
         return None
     try:
         cursor = connection.cursor()
-        query = """INSERT INTO company (owner_id, company_name, description) VALUES (%s, %s, %s)"""
-        values = (owner_id, company_name, description)
+        query = """INSERT INTO company(owner_id, company_name, description) VALUES (%s, %s, %s)"""
+        values = (owner_id,company_name,description)
         cursor.execute(query, values)
         connection.commit()
         print("sirket  oluşturuldu")
@@ -45,7 +45,7 @@ def delete_company_by_id(company_id):
         return None
     try:
         cursor=connection.cursor(dictionary=True)
-        query="DELETE FROM food WHERE id=%s"
+        query="DELETE FROM company WHERE id=%s"
         cursor.execute(query,(company_id,))
         connection.commit()
         print(f"{company_id} id'li sirket silindi")
@@ -113,11 +113,9 @@ def update_company(company_id,company_name=None,description=None):
         }
         fields = [f"{key} = %s" for key, value in update_fields.items() if value is not None]
         values=[value for key,value in update_fields.items() if value is not None]
-
         if not fields:
             print("güncellemek için alan verilmedi")
-            return None
-        
+            return None  
         query=f"UPDATE company SET {','.join(fields)} WHERE id=%s"     
         values.append(company_id)
         cursor.execute(query,values)
