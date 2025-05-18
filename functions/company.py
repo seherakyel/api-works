@@ -77,3 +77,23 @@ def add_company( company_name, description):
         cursor.close()
         connection.close()
 #print(add_company("aaja","ckJSO"))
+
+
+def get_company_by_id(company_id): 
+    connection=mysql.connector.connect(**CONFIG)
+    if not connection: # bağlantı başarısızsa 
+        return None # hiçbir şey döndürmez
+    try: # hataları yakalamak için deneme bloğu başlar 
+        cursor=connection.cursor(dictionary=True) 
+        query = "SELECT company_name FROM food_choice.company WHERE id=%s" 
+        cursor.execute(query,(company_id,))  # sorguyu çalıştırır %s yerine company_id  gelir
+        user=cursor.fetchone() # eşleşen bir kullanıcı varsa onu alır
+        return f"{user['company_name']}" #
+    except Exception as e: # eğer hata olursa hatayı e nin içine kaydet 
+        print("sirket getirilemedi") # hata mesajı yazdırlır 
+        print(f"hata:{e}") # hatanın kendisini yazdırılır
+        return None 
+    finally:
+        cursor.close() # cursor kapatılır
+        connection.close() # veritabanı bağlantısı kapatılır
+#print(get_company_by_id(17))
