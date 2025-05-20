@@ -22,6 +22,63 @@ templates = Jinja2Templates(directory="templates")
 async def show_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+
+
+from fastapi import Form
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/register", response_class=HTMLResponse)
+async def show_register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+
+@app.post("/register", response_class=HTMLResponse)
+async def handle_register(
+    request: Request,
+    user_name: str = Form(...),
+    surname: str = Form(...),
+    is_premium: int = Form(...),
+    age: int = Form(...),
+    balance: int = Form(...),
+    password: str = Form(...)
+):
+    from functions.user import register_user  # içeri aktar
+    result = register_user(user_name, surname, is_premium, age, balance, password)
+
+    if result == "SUCCESS":
+        user_data = {
+            "user_name": user_name,
+            "surname": surname,
+            "age": age,
+            "balance": balance,
+            "is_premium": is_premium
+        }
+        return templates.TemplateResponse("home.html", {"request": request, "user": user_data})
+
+    elif result == "EXISTS":
+        return templates.TemplateResponse("register.html", {
+            "request": request,
+            "error": "Bu kullanıcı adı zaten alınmış."
+        })
+
+    else:
+        return templates.TemplateResponse("register.html", {
+            "request": request,
+            "error": f"Kayıt sırasında hata oluştu: {result}"
+        })
+
+
+@app.post("/login", response_class=HTMLResponse)
+async def handle_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
+    from functions.user import user_login
+    user = user_login(user_name, password)
+    if user:
+        return templates.TemplateResponse("home.html", {"request": request, "user": user})
+    else:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
+
+
 # Mevcut router'lar
 app.include_router(user_routes, prefix="/users", tags=["Users"])
 app.include_router(food_routes, prefix="/foods", tags=["Foods"])
