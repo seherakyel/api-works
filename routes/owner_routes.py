@@ -36,17 +36,21 @@ from fastapi import Request
 
 templates = Jinja2Templates(directory="templates")
 
+from fastapi import Form
+
 @router.post("/login", response_class=HTMLResponse)
-async def login_owner_endpoint(request: Request, owner: OwnerLogin):
-    result = login_owner(owner.mail, owner.password)
+async def login_owner_endpoint(
+    request: Request,
+    mail: str = Form(...),
+    password: str = Form(...)
+):
+    result = login_owner(mail, password)
 
     if result:
-        # Kayıtlıysa anasayfaya yönlendir
         return templates.TemplateResponse("home.html", {"request": request, "owner": result})
     else:
-        # Kayıtlı değilse kayıt sayfasına yönlendir
         return templates.TemplateResponse("register.html", {"request": request})
-    
+
 from pydantic import BaseModel
 class OwnerRegister(BaseModel):
     mail: str
