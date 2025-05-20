@@ -36,7 +36,25 @@ def login_owner(mail, password):
         cursor.close()
         connection.close()
 
-print(login_owner(2,"seher@gmail.com","12345"))
+#print(login_owner(2,"seher@gmail.com","12345"))
+
+
+
+def create_owner(mail, password):
+    connection = mysql.connector.connect(**CONFIG)
+    try:
+        cursor = connection.cursor()
+        query = "INSERT INTO owner (mail, password) VALUES (%s, %s)"
+        cursor.execute(query, (mail, password))
+        connection.commit()
+        print("Kayıt başarılı")
+        return True
+    except Exception as e:
+        print("Kayıt hatası:", e)
+        return False
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def delete_owner_by_id(owner_id):

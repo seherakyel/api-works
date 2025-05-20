@@ -1,21 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Giriş Yap</title>
-    <link rel="stylesheet" href="/static/css/login.css">
-</head>
-<body>
-    <div class="login-container">
-        <h2>İşletme Girişi</h2>
-        <form id="loginForm">
-            <input type="email" id="mail" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
-            <button type="submit">Giriş Yap</button>
-            <p id="error-message" style="color:red;"></p>
-        </form>
-    </div>
-
-    <script src="/static/js/login.js"></script>
-</body>
-</html>
+<form action="/owners/login" method="post">
+    <input type="email" name="mail" placeholder="E-posta" required>
+    <input type="password" name="password" placeholder="Şifre" required>
+    <button type="submit">Giriş Yap</button>
+</form>

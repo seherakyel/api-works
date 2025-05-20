@@ -2,7 +2,7 @@ import sys
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from functions.owner import ( login_owner,delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner
+from functions.owner import ( login_owner,delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner,create_owner
                              
 )
 
@@ -27,6 +27,42 @@ async def login_owner_endpoint(owner: OwnerLogin):
         return {"message": "Giriş başarılı", "owner": result}
     else:
         raise HTTPException(status_code=401, detail="Mail veya şifre hatalı")
+    
+
+from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
+
+templates = Jinja2Templates(directory="templates")
+
+@router.post("/login", response_class=HTMLResponse)
+async def login_owner_endpoint(request: Request, owner: OwnerLogin):
+    result = login_owner(owner.mail, owner.password)
+
+    if result:
+        # Kayıtlıysa anasayfaya yönlendir
+        return templates.TemplateResponse("home.html", {"request": request, "owner": result})
+    else:
+        # Kayıtlı değilse kayıt sayfasına yönlendir
+        return templates.TemplateResponse("register.html", {"request": request})
+    
+from pydantic import BaseModel
+class OwnerRegister(BaseModel):
+    mail: str
+    password: str
+
+
+@router.post("/register", response_class=HTMLResponse)
+async def register_owner_endpoint(request: Request, owner: OwnerRegister):
+    success = create_owner(owner.mail, owner.password)
+    
+    if success:
+        return templates.TemplateResponse("home.html", {"request": request, "owner": {"mail": owner.mail}})
+    else:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Kayıt başarısız!"})
+
+
 
     
 

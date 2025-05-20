@@ -11,6 +11,8 @@ document.getElementById("loginForm").addEventListener("submit", async function (
         },
         body: JSON.stringify({ mail, password }),
     });
+    window.location.href = "/home"; // gibi bir yönlendirme
+
 
     const data = await response.json();
 
