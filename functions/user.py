@@ -121,29 +121,32 @@ def register_user(user_name, surname, is_premium, age, balance, password):
         return None
     try:
         cursor = connection.cursor(dictionary=True)
-        # Aynı kullanıcı adıyla biri var mı diye kontrol et
+
+        #  Mevcut kullanıcıyı kontrol et ve sonucu oku
         check_query = "SELECT * FROM user WHERE user_name = %s"
         cursor.execute(check_query, (user_name,))
         existing_user = cursor.fetchone()
+
         if existing_user:
-            print(" kullanici zaten alinmis.")
-            return None
-        # Yeni kullanıcıyı ekle
+            print("Bu kullanıcı zaten kayıtlı.")
+            return "EXISTS"
+
+        #  Yeni kullanıcıyı ekle
         insert_query = """
         INSERT INTO user(user_name, surname, is_premium, age, balance, password)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (user_name, surname, is_premium, age, balance, password))
         connection.commit()
-        print(f"kayit basarili: {user_name}  sisteme kayit oldu.")
-        return True
+        return "SUCCESS"
+
     except Exception as e:
-        print("kayit islemi basarisiz.")
-        print(f"Hata: {e}")
-        return None
+        print("Kayıt hatası:", e)
+        return f"ERROR: {e}"
     finally:
         cursor.close()
         connection.close()
+
 
 
 

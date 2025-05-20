@@ -20,7 +20,6 @@ async def user_login_endpoint(user_name: str, password: str):
         raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
     
 
-templates = Jinja2Templates(directory="templates")
 
 @router.post("/login_html", response_class=HTMLResponse)
 async def login_html(request: Request, user_name: str = Form(...), password: str = Form(...)):
@@ -51,6 +50,9 @@ async def user_register_endpoint(
 
 
 
+
+templates = Jinja2Templates(directory="templates")
+
 @router.post("/register_html", response_class=HTMLResponse)
 async def register_user_html(
     request: Request,
@@ -61,8 +63,9 @@ async def register_user_html(
     balance: int = Form(...),
     password: str = Form(...)
 ):
-    success = register_user(user_name, surname, is_premium, age, balance, password)
-    if success:
+    result = register_user(user_name, surname, is_premium, age, balance, password)
+
+    if result == "SUCCESS":
         user_data = {
             "user_name": user_name,
             "surname": surname,
@@ -71,8 +74,19 @@ async def register_user_html(
             "is_premium": is_premium
         }
         return templates.TemplateResponse("home.html", {"request": request, "user": user_data})
-    else:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Kullanıcı adı alınmış olabilir veya kayıt hatası!"})
+    
+    elif result == "EXISTS":
+        return templates.TemplateResponse("register.html", {
+            "request": request,
+            "error": " Bu kullanıcı adı zaten alınmış."
+        })
+    
+    else:  # Hata varsa
+        return templates.TemplateResponse("register.html", {
+            "request": request,
+            "error": f"Kayıt sırasında hata oluştu: {result}"
+        })
+
 
 
 

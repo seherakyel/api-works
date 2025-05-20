@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Kayıt Ol</title>
-</head>
-<body>
-    <h2>İşletmeci Kayıt Sayfası</h2>
-    <form action="/owners/register" method="post">
-        <input type="email" name="mail" placeholder="E-posta" required><br>
-        <input type="password" name="password" placeholder="Şifre" required><br>
-        <button type="submit">Kayıt Ol</button>
-    </form>
-</body>
-</html>
+<form action="/users/register_html" method="post">
+    {% if error %}
+    <p style="color: rgb(119, 255, 0);">{{ error }}</p>
+    {% endif %}
+    <input type="text" name="user_name" placeholder="Kullanıcı Adı" required><br>
+    <input type="text" name="surname" placeholder="Soyad" required><br>
+    <input type="number" name="age" placeholder="Yaş" required><br>
+    <input type="number" name="balance" placeholder="Bakiye" required><br>
+    <input type="password" name="password" placeholder="Şifre" required><br>
+    <select name="is_premium">
+        <option value="1">Premium</option>
+        <option value="0">Normal</option>
+    </select><br>
+    <button type="submit">Kayıt Ol</button>
+</form>
