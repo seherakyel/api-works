@@ -2,19 +2,19 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>İşletme Girişi</title>
-
-    <!-- 🌟 Buraya yapıştır -->
+    <title>Kullanıcı Girişi</title>
     <link rel="stylesheet" href="/static/css/login.css">
-    <script src="/static/js/login.js"></script>
 </head>
 <body>
     <div class="login-container">
-        <h2>İşletme Girişi</h2>
-        <form action="/owners/login" method="post">
-            <input type="email" name="mail" placeholder="E-posta" required>
+        <h2>Kullanıcı Girişi</h2>
+        <form action="/users/login_html" method="post">
+            <input type="text" name="user_name" placeholder="Kullanıcı Adı" required>
             <input type="password" name="password" placeholder="Şifre" required>
             <button type="submit">Giriş Yap</button>
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
         </form>
     </div>
 </body>

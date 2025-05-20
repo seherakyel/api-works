@@ -8,9 +8,6 @@ from functions.user import (
 
 router = APIRouter()
 
-
-router = APIRouter()
-
 @router.post("/login")
 async def user_login_endpoint(user_name: str, password: str):
     user = user_login(user_name, password)
@@ -18,6 +15,24 @@ async def user_login_endpoint(user_name: str, password: str):
         return {"message": f"Giriş başarılı: Hoş geldin {user['user_name']}", "user": user}
     else:
         raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
+    
+
+
+
+from fastapi import Request, Form
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi import APIRouter
+templates = Jinja2Templates(directory="templates")
+
+@router.post("/login_html", response_class=HTMLResponse)
+async def login_html(request: Request, user_name: str = Form(...), password: str = Form(...)):
+    user = user_login(user_name, password)
+    if user:
+        return templates.TemplateResponse("home.html", {"request": request, "user": user})
+    else:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
+
 
 
 
