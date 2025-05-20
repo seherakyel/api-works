@@ -18,7 +18,7 @@ is_db_connected()
 
 
 
-def create_owner(owner_id, mail,password):
+def login_owner(owner_id, mail,password):
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
         return None
@@ -35,7 +35,7 @@ def create_owner(owner_id, mail,password):
     finally:
         cursor.close()
         connection.close()
-print(create_owner(2,"seher@gmail.com","12345"))
+print(login_owner(2,"seher@gmail.com","12345"))
 
 
 def delete_owner_by_id(owner_id):

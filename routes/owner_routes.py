@@ -2,7 +2,7 @@ import sys
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from functions.owner import ( create_owner,delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner
+from functions.owner import ( login_owner,delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner
                              
 )
 
@@ -11,7 +11,7 @@ router = APIRouter()
 class OwnerBase(BaseModel):
     mail: str
     password: str
-class OwnerCreate(OwnerBase):
+class OwnerLogin(OwnerBase):
     owner_id: int
 class OwnerUpdate(BaseModel):
     owner_id: int
@@ -20,10 +20,10 @@ class OwnerUpdate(BaseModel):
 class OwnerID(BaseModel):
     owner_id: int
 
-@router.post("/owner/create")
-async def create_owner_endpoint(owner: OwnerCreate):
+@router.post("/owner/login")
+async def login_owner_endpoint(owner: OwnerLogin):
     try:
-        create_owner(owner.owner_id, owner.mail, owner.password)
+        login_owner(owner.owner_id, owner.mail, owner.password)
         return {"message": "isletme olusturuldu"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"olusturulmadi: {e}")
