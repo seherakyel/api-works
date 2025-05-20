@@ -145,7 +145,6 @@ update_owner(
 )
 
 
-
 def list_all_owner():
     connection=mysql.connector.connect(**CONFIG)
     if not connection:
