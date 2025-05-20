@@ -2,7 +2,7 @@ import sys
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from functions.owner import ( login_owner,delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner,create_owner
+from functions.owner import ( delete_owner_by_id,add_owner, get_owner_by_id,update_owner,list_all_owner,create_owner
                              
 )
 
@@ -20,55 +20,6 @@ class OwnerUpdate(BaseModel):
 class OwnerID(BaseModel):
     owner_id: int
 
-@router.post("/login")
-async def login_owner_endpoint(owner: OwnerLogin):
-    result = login_owner(owner.mail, owner.password)
-    if result:
-        return {"message": "Giriş başarılı", "owner": result}
-    else:
-        raise HTTPException(status_code=401, detail="Mail veya şifre hatalı")
-    
-
-from fastapi.responses import HTMLResponse
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
-from fastapi import Request
-
-templates = Jinja2Templates(directory="templates")
-
-from fastapi import Form
-
-@router.post("/login", response_class=HTMLResponse)
-async def login_owner_endpoint(
-    request: Request,
-    mail: str = Form(...),
-    password: str = Form(...)
-):
-    result = login_owner(mail, password)
-
-    if result:
-        return templates.TemplateResponse("home.html", {"request": request, "owner": result})
-    else:
-        return templates.TemplateResponse("register.html", {"request": request})
-
-from pydantic import BaseModel
-class OwnerRegister(BaseModel):
-    mail: str
-    password: str
-
-
-@router.post("/register", response_class=HTMLResponse)
-async def register_owner_endpoint(request: Request, owner: OwnerRegister):
-    success = create_owner(owner.mail, owner.password)
-    
-    if success:
-        return templates.TemplateResponse("home.html", {"request": request, "owner": {"mail": owner.mail}})
-    else:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Kayıt başarısız!"})
-
-
-
-    
 
 
 @router.delete("/owner/delete/{owner_id}")

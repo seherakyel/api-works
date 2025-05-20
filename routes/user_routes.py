@@ -2,6 +2,9 @@ import sys
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi import Request, Form
 from functions.user import (
      user_login,register_user,get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user,list_all_users
 )
@@ -17,12 +20,6 @@ async def user_login_endpoint(user_name: str, password: str):
         raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
     
 
-
-
-from fastapi import Request, Form
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from fastapi import APIRouter
 templates = Jinja2Templates(directory="templates")
 
 @router.post("/login_html", response_class=HTMLResponse)
@@ -50,6 +47,39 @@ async def user_register_endpoint(
         return {"message": f"{user_name} başarıyla kayıt oldu."}
     else:
         raise HTTPException(status_code=400, detail="Kayıt işlemi başarısız. Kullanıcı adı alınmış olabilir.")
+
+
+
+
+@router.post("/register_html", response_class=HTMLResponse)
+async def register_user_html(
+    request: Request,
+    user_name: str = Form(...),
+    surname: str = Form(...),
+    is_premium: int = Form(...),
+    age: int = Form(...),
+    balance: int = Form(...),
+    password: str = Form(...)
+):
+    success = register_user(user_name, surname, is_premium, age, balance, password)
+    if success:
+        user_data = {
+            "user_name": user_name,
+            "surname": surname,
+            "age": age,
+            "balance": balance,
+            "is_premium": is_premium
+        }
+        return templates.TemplateResponse("home.html", {"request": request, "user": user_data})
+    else:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Kullanıcı adı alınmış olabilir veya kayıt hatası!"})
+
+
+
+
+@router.get("/register_page", response_class=HTMLResponse)
+async def show_register_form(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
 
 @router.get("/user/{user_id}")
