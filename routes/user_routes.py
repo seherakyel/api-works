@@ -13,6 +13,7 @@ class RegisterUser(BaseModel):
     is_premium: str
     age: int
     balance: str
+    password:str
 
 @router.post("/add")
 async def add_user_endpoint(user: RegisterUser):
@@ -22,13 +23,16 @@ async def add_user_endpoint(user: RegisterUser):
             user.surname,
             user.is_premium,
             user.age,
-            user.balance
+            user.balance,
+            user.password
         )
         return {"message": True}
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail="kullanici eklenmedi")
+
+
 
 @router.get("/user/{user_id}")
 async def get_user_by_id_endpoint(user_id: int):
@@ -84,6 +88,7 @@ class UpdateUser(BaseModel):
     is_premium: Optional[int] = None
     age: Optional[int] = None
     balance: Optional[int] = None
+    password:Optional[str] = None
 
 @router.put("/update_user") # PUT isteği: Var olan kullanıcıyı güncellemek için kullanılır
 async def update_user_endpoint(user: UpdateUser): # Gelen veri, UpdateUser modeline göre kontrol edilir
@@ -94,7 +99,8 @@ async def update_user_endpoint(user: UpdateUser): # Gelen veri, UpdateUser model
             surname=user.surname, # Yeni ad (gönderildiyse)
             is_premium=user.is_premium, # Premium durumu (1 veya 0)
             age=user.age, # Yeni yaş bilgisi
-            balance=user.balance  # Yeni bakiye bilgisi
+            balance=user.balance, # Yeni bakiye bilgisi
+            password=user.password
         )
         return {"message": "Kullanıcı güncellendi"} # İşlem başarılıysa bu mesaj dönülür
     except Exception as e:

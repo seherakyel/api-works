@@ -36,7 +36,7 @@ def get_user_by_id(user_id): # id ye göre kullanıcı getir
     finally:
         cursor.close()
         connection.close()
-print(get_user_by_id(29))
+#print(get_user_by_id(2))
 
 
 
@@ -61,7 +61,7 @@ def is_premium(user_id):
     finally:
         cursor.close()
         connection.close()
-is_premium(30)
+#(is_premium(2))
 
 
 def get_user_full_info_by_id(user_id):
@@ -82,16 +82,16 @@ def get_user_full_info_by_id(user_id):
     finally:
         cursor.close()
         connection.close()
-#print(get_user_full_info_by_id(29))
+#print(get_user_full_info_by_id(1))
 
-def add_user(user_name,surname,is_premium,age,balance):
+def add_user(user_name,surname,is_premium,age,balance,password):
     connection=mysql.connector.connect(**CONFIG)
     if not connection:
         return None
     try:
         cursor = connection.cursor(dictionary=True)
-        query="INSERT INTO user(user_name,surname,is_premium,age,balance) VALUES(%s,%s,%s,%s,%s)"
-        cursor.execute(query,(user_name,surname,is_premium,age,balance))
+        query="INSERT INTO user(user_name,surname,is_premium,age,balance,password) VALUES(%s,%s,%s,%s,%s,%s)"
+        cursor.execute(query,(user_name,surname,is_premium,age,balance,password))
         connection.commit()
         print(f"{ user_name} kullanicisi eklendi")
     except Exception as e:
@@ -100,7 +100,7 @@ def add_user(user_name,surname,is_premium,age,balance):
     finally:
         cursor.close()
         connection.close()
-#print(add_user("seher","akyel",1,20,560))
+#print(add_user("Irem","Sarboga",1,20,560,"irem123"))
 
 
 def delete_user_by_id(user_id):
@@ -122,53 +122,7 @@ def delete_user_by_id(user_id):
     finally:
         cursor.close()
         connection.close()
-print(delete_user_by_id(29))
-
-
-def update_user(user_id,user_name=None,surname=None,is_premium=None,age=None,balance=None):
-    connection=mysql.connector.connect(**CONFIG)
-    if not connection:
-        return None
-    
-    try:
-        cursor=connection.cursor(dictionary=True)
-
-        update_fields={
-
-            "user_name":user_name,
-            "surname":surname,
-            "is_premium":is_premium,
-            "age":age,
-            "balance":balance            
-        }      
-        fields = [f"{key} = %s" for key, value in update_fields.items() if value is not None]
-        values=[value for key,value in update_fields.items() if value is not None]
-
-        if not fields:
-            print("güncellemek için alan verilmedi")
-            return None
-        
-        query=f"UPDATE user SET {','.join(fields)} WHERE id=%s"
-        values.append(user_id)
-        cursor.execute(query,values)
-        connection.commit()
-        print(f"{user_id} kullanicisi güncellendi")
-    except Exception as e:
-        print("kullanici güncellenemedi")
-        print(f"hata:{e}")
-        return None
-    finally:
-        cursor.close()
-        connection.close()
-update_user(
-    user_id=52,
-    user_name="Ahmet",
-    surname="doğan",
-    is_premium=1,
-    age=36,
-    balance=200
-)
-print(update_user)
+#print(delete_user_by_id(13))
 
 
 
@@ -192,6 +146,41 @@ def list_all_users():
 print(list_all_users())
 
 #connection.commit() “veritabanındaki değişiklikleri kaydet” anlamına gelir ve sadece INSERT, UPDATE, DELETE gibi işlemlerden sonra kullanılır SELECTte kullanılmaz
+
+
+def update_user(user_id, user_name, surname, is_premium, age, balance, password):
+    connection = mysql.connector.connect(**CONFIG)
+    try:
+        cursor = connection.cursor()
+        query = """
+        UPDATE user SET
+            user_name = %s,
+            surname = %s,
+            is_premium = %s,
+            age = %s,
+            balance = %s,
+            password = %s
+        WHERE id = %s
+        """
+        values = (user_name, surname, is_premium, age, balance, password, user_id)
+        cursor.execute(query, values)
+        connection.commit()  
+        print("kullanıcı güncellendi")
+    except Exception as e:
+        print("güncelleme hatası:", e)
+    finally:
+        cursor.close()
+        connection.close()
+sonuc = update_user(
+    user_id=19,
+    user_name="Ahmet",
+    surname="Doğan",
+    is_premium=1,
+    age=36,
+    balance=200,
+    password="ahmet123"
+)
+print(sonuc)
 
 
         
