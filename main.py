@@ -33,6 +33,7 @@ async def show_register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
+
 @app.post("/register", response_class=HTMLResponse)
 async def handle_register(
     request: Request,
