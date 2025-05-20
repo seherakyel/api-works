@@ -3,35 +3,38 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from functions.user import (
-    add_user, get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user,list_all_users
+     user_login,register_user,get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user,list_all_users
 )
 
 router = APIRouter()
-class RegisterUser(BaseModel):
-    user_name: str
-    surname: str
-    is_premium: str
-    age: int
-    balance: str
-    password:str
 
-@router.post("/add")
-async def add_user_endpoint(user: RegisterUser):
-    try:
-        add_user(
-            user.user_name,
-            user.surname,
-            user.is_premium,
-            user.age,
-            user.balance,
-            user.password
-        )
-        return {"message": True}
-    except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="kullanici eklenmedi")
 
+router = APIRouter()
+
+@router.post("/login")
+async def user_login_endpoint(user_name: str, password: str):
+    user = user_login(user_name, password)
+    if user:
+        return {"message": f"Giriş başarılı: Hoş geldin {user['user_name']}", "user": user}
+    else:
+        raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
+
+
+
+@router.post("/register")
+async def user_register_endpoint(
+    user_name: str,
+    surname: str,
+    is_premium: int,
+    age: int,
+    balance: int,
+    password: str
+):
+    result = register_user(user_name, surname, is_premium, age, balance, password)
+    if result:
+        return {"message": f"{user_name} başarıyla kayıt oldu."}
+    else:
+        raise HTTPException(status_code=400, detail="Kayıt işlemi başarısız. Kullanıcı adı alınmış olabilir.")
 
 
 @router.get("/user/{user_id}")
