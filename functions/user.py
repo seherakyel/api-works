@@ -116,6 +116,7 @@ def user_login(user_name, password):
 
 
 def register_user(user_name, surname, is_premium, age, balance, password):
+    print(">> Fonksiyon çalıştı")
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
         return None
