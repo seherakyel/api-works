@@ -1,28 +1,49 @@
---Create Database
+-- Create Database
 DROP DATABASE IF EXISTS food_choice;
 CREATE DATABASE food_choice;
 USE food_choice;
 
--- Create 'user' table
+-- Create 'user' table (herkesin kayıt olduğu ana tablo)
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
+    user_name VARCHAR(20) NOT NULL,
+    surname VARCHAR(20) NOT NULL,
     is_premium BOOLEAN DEFAULT 0,
     age INT,
-    balance INT
+    balance INT,
+    password VARCHAR(20) NOT NULL
 );
 
--- Create 'food' table
+-- Create 'owner' table (sadece işletme açan kullanıcılar burada yer alır)
+CREATE TABLE owner (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- owner'a özel bir ID
+    owner_id INT NOT NULL,             -- user tablosuyla ilişki
+    mail VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- Create 'company' table (her owner birden fazla şirket açabilir)
+CREATE TABLE company (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner_id INT NOT NULL,
+    company_name VARCHAR(50) NOT NULL,
+    description VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES owner(id) ON DELETE CASCADE
+);
+
+-- Create 'food' table (şirketlere bağlı yemekler de eklenebilir istersen company_id eklenebilir)
 CREATE TABLE food (
     id INT AUTO_INCREMENT PRIMARY KEY,
     food_name VARCHAR(100) NOT NULL,
-    stock INT ,
+    stock INT,
     price INT,
     distance FLOAT
 );
 
--- Create 'orders' table
+-- Create 'orders' table (kullanıcı ve yemek ilişkisi)
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -32,22 +53,4 @@ CREATE TABLE orders (
     order_time DATETIME,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (food_id) REFERENCES food(id) ON DELETE CASCADE
-);
-
-
-
-CREATE TABLE company (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    owner_id INT,
-    company_name VARCHAR(20),
-    description VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner_id) REFERENCES user(id) ON DELETE CASCADE
-);
-
-CREATE TABLE owner (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    mail VARCHAR(255),
-    password VARCHAR(255)
 );
