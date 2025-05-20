@@ -84,23 +84,6 @@ def get_user_full_info_by_id(user_id):
         connection.close()
 #print(get_user_full_info_by_id(1))
 
-def add_user(user_name,surname,is_premium,age,balance,password):
-    connection=mysql.connector.connect(**CONFIG)
-    if not connection:
-        return None
-    try:
-        cursor = connection.cursor(dictionary=True)
-        query="INSERT INTO user(user_name,surname,is_premium,age,balance,password) VALUES(%s,%s,%s,%s,%s,%s)"
-        cursor.execute(query,(user_name,surname,is_premium,age,balance,password))
-        connection.commit()
-        print(f"{ user_name} kullanicisi eklendi")
-    except Exception as e:
-        print("kullanici eklenmedi")
-        print(f"hata:{e}")
-    finally:
-        cursor.close()
-        connection.close()
-#print(add_user("Irem","Sarboga",1,20,560,"irem123"))
 
 
 
@@ -108,7 +91,6 @@ def add_user(user_name,surname,is_premium,age,balance,password):
 def user_login(user_name, password):
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
-        print("Veritabanına bağlanılamadı.")
         return None
     try:
         cursor = connection.cursor(dictionary=True)
@@ -117,19 +99,52 @@ def user_login(user_name, password):
         result = cursor.fetchall()
         if result:
             user = result[0]
-            print(f"Giriş başarılı: Hoş geldin {user['user_name']}!")
+            print(f"giris basarili: Hoş geldin {user['user_name']}!")
             return user
         else:
-            print("Hatalı kullanıcı adı veya şifre.")
+            print("hatali kullanici adi veya sifre.")
             return None
     except Exception as e:
-        print("Giriş işlemi başarısız.")
+        print("giris islemi basarisiz.")
         print(f"Hata: {e}")
         return None
     finally:
         cursor.close()
         connection.close()
 #print(user_login("Seher", "seher456"))
+
+
+
+def register_user(user_name, surname, is_premium, age, balance, password):
+    connection = mysql.connector.connect(**CONFIG)
+    if not connection:
+        return None
+    try:
+        cursor = connection.cursor(dictionary=True)
+        # Aynı kullanıcı adıyla biri var mı diye kontrol et
+        check_query = "SELECT * FROM user WHERE user_name = %s"
+        cursor.execute(check_query, (user_name,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            print(" kullanici zaten alinmis.")
+            return None
+        # Yeni kullanıcıyı ekle
+        insert_query = """
+        INSERT INTO user(user_name, surname, is_premium, age, balance, password)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (user_name, surname, is_premium, age, balance, password))
+        connection.commit()
+        print(f"kayit basarili: {user_name}  sisteme kayit oldu.")
+        return True
+    except Exception as e:
+        print("kayit islemi basarisiz.")
+        print(f"Hata: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+
 
 
 def delete_user_by_id(user_id):
