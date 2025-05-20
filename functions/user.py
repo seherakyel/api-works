@@ -103,6 +103,35 @@ def add_user(user_name,surname,is_premium,age,balance,password):
 #print(add_user("Irem","Sarboga",1,20,560,"irem123"))
 
 
+
+
+def user_login(user_name, password):
+    connection = mysql.connector.connect(**CONFIG)
+    if not connection:
+        print("Veritabanına bağlanılamadı.")
+        return None
+    try:
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM user WHERE user_name = %s AND password = %s"
+        cursor.execute(query, (user_name, password))
+        result = cursor.fetchall()
+        if result:
+            user = result[0]
+            print(f"Giriş başarılı: Hoş geldin {user['user_name']}!")
+            return user
+        else:
+            print("Hatalı kullanıcı adı veya şifre.")
+            return None
+    except Exception as e:
+        print("Giriş işlemi başarısız.")
+        print(f"Hata: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+#print(user_login("Seher", "seher456"))
+
+
 def delete_user_by_id(user_id):
     connection=mysql.connector.connect(**CONFIG)
     if not connection:
@@ -180,7 +209,7 @@ sonuc = update_user(
     balance=200,
     password="ahmet123"
 )
-print(sonuc)
+#print(sonuc)
 
 
         
