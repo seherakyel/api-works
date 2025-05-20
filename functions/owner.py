@@ -18,23 +18,24 @@ is_db_connected()
 
 
 
-def login_owner(owner_id, mail,password):
+def login_owner(mail, password):
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
         return None
     try:
-        cursor = connection.cursor()
-        query = """INSERT INTO owner(owner_id, mail,password) VALUES (%s, %s, %s)"""
-        values = (owner_id, mail,password)
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM owner WHERE mail = %s AND password = %s"
+        values = (mail, password)
         cursor.execute(query, values)
-        connection.commit()
-        print("isletme  oluşturuldu")
+        result = cursor.fetchone()
+        return result  # Eğer kullanıcı varsa dict döner, yoksa None
     except Exception as e:
-        print("isletme oluşturulmadi:", e)
+        print("Giriş hatası:", e)
         return None
     finally:
         cursor.close()
         connection.close()
+
 print(login_owner(2,"seher@gmail.com","12345"))
 
 

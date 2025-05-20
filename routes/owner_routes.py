@@ -20,13 +20,14 @@ class OwnerUpdate(BaseModel):
 class OwnerID(BaseModel):
     owner_id: int
 
-@router.post("/owner/login")
+@router.post("/login")
 async def login_owner_endpoint(owner: OwnerLogin):
-    try:
-        login_owner(owner.owner_id, owner.mail, owner.password)
-        return {"message": "isletme olusturuldu"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"olusturulmadi: {e}")
+    result = login_owner(owner.mail, owner.password)
+    if result:
+        return {"message": "Giriş başarılı", "owner": result}
+    else:
+        raise HTTPException(status_code=401, detail="Mail veya şifre hatalı")
+
     
 
 
