@@ -8,10 +8,10 @@ body {
 }
 
 .login-container {
-    background: rgb(255, 255, 255);
+    background: rgb(126, 8, 8);
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(102, 99, 94, 0.1);
 }
 
 input {
@@ -23,7 +23,7 @@ input {
 button {
     padding: 10px;
     width: 100%;
-    background-color: #4CAF50;
+    background-color: #11a016;
     color: rgb(255, 255, 255);
     border: none;
     cursor: pointer;
