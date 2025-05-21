@@ -1,10 +1,15 @@
 import sys
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Form, Response, status
 from pydantic import BaseModel
 from typing import Optional
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from functions.company import (create_company,delete_company_by_id,add_company,get_company_by_id,update_company,list_all_company)
+from functions.user import user_login
+import main  # Ana modülü import ediyoruz (active_user değişkeni için)
 
 router = APIRouter()
+templates = Jinja2Templates(directory="templates")
 
 class CompanyBase(BaseModel):
     company_name: str
@@ -17,6 +22,31 @@ class CompanyUpdate(BaseModel):
     description: Optional[str] = None
 
 
+@router.get("/login", response_class=HTMLResponse)
+async def show_company_login_page(request: Request):
+    return templates.TemplateResponse("company_login.html", {"request": request})
+
+@router.post("/login")
+async def handle_company_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
+    try:
+        print(f"Gelen değerler: user_name={user_name}, password={password}")
+        # Önce normal kullanıcıları kontrol edelim
+        user = user_login(user_name, password)
+        
+        if user:
+            # Kullanıcı bilgilerini global değişkene kaydedelim
+            main.active_user = user
+            print(f"Session'a kaydedilen kullanıcı: {user['user_name']}")
+            
+            # Kullanıcı bulundu, giriş başarılı - ana sayfaya yönlendir
+            response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
+            return response
+        
+        # Kullanıcı bulunamadı, hata mesajı göster
+        return templates.TemplateResponse("company_login.html", {"request": request, "error": "İşletme adı veya şifre hatalı."})
+    except Exception as e:
+        print(f"Hata oluştu: {str(e)}")
+        return templates.TemplateResponse("company_login.html", {"request": request, "error": f"Giriş hatası: {str(e)}"})
 
 @router.post("/company/create")
 async def create_company_endpoint(company: CompanyCreate):

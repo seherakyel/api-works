@@ -94,15 +94,14 @@ async def update_food_endpoint(food: update_food): # Gelen veri, UpdateUser mode
 
 
 
-@router.get("/list_food")
-async def list_all_foods_endpoint(food:list):
+@router.get("/api/list_foods")
+async def list_all_foods_endpoint():
     try:
-        list_all_foods()
-        return {"message":"yemek listesi olusturuldu"}
-    except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
+        foods = list_all_foods()
+        return foods
     except Exception as e:
-        raise HTTPException(status_code=500, detail="yemek listesi olusturulmadi")
+        raise HTTPException(status_code=500, detail="Yemek listesi oluşturulamadı.")
+
 
 
 
@@ -135,7 +134,6 @@ async def decrease_stock_by_food_name_endpoint(food_name:str, amount:int):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail="hata olustu stok guncellenmedi")            
-
 
 
 

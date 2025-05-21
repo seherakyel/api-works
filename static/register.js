@@ -25,7 +25,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       messageEl.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
       messageEl.style.borderLeftColor = '#28a745';
       errorTextEl.style.color = '#28a745';
-      errorTextEl.innerText = data.message || "Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...";
+      errorTextEl.innerText = data.message || "Kayıt başarılı! İşletme giriş sayfasına yönlendiriliyorsunuz...";
       
       setTimeout(() => {
         window.location.href = '/login';

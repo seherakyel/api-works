@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kayıt Ol</title>
+  <title>İşletme Girişi</title>
   <link rel="stylesheet" href="/static/login.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,41 +11,29 @@
   <div class="container">
     <div class="login-card">
       <div class="login-header">
-        <h1><i class="fas fa-user-plus"></i> Yeni Kayıt</h1>
+        <h1><i class="fas fa-building"></i> İşletme Girişi</h1>
       </div>
 
-      <div id="registerError" class="error-message" style="display: none;">
-        <i class="fas fa-exclamation-circle"></i>
-        <span id="errorText"></span>
-      </div>
+      {% if success %}
+        <div class="success-message" style="display: flex; background-color: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; padding: 1rem; margin-bottom: 1rem; border-radius: 4px;">
+          <i class="fas fa-check-circle" style="color: #28a745; margin-right: 0.5rem;"></i>
+          <span style="color: #28a745;">{{ success }}</span>
+        </div>
+      {% endif %}
 
-      <form id="registerForm" class="login-form" action="/register" method="post">
+      {% if error %}
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>{{ error }}</span>
+        </div>
+      {% endif %}
+
+      <form id="companyLoginForm" action="/login" method="post" class="login-form" enctype="application/x-www-form-urlencoded">
         <div class="input-group">
           <div class="input-icon">
             <i class="fas fa-user"></i>
           </div>
           <input type="text" name="user_name" placeholder="Kullanıcı Adı" required>
-        </div>
-        
-        <div class="input-group">
-          <div class="input-icon">
-            <i class="fas fa-user-tag"></i>
-          </div>
-          <input type="text" name="surname" placeholder="Soyad" required>
-        </div>
-        
-        <div class="input-group">
-          <div class="input-icon">
-            <i class="fas fa-birthday-cake"></i>
-          </div>
-          <input type="number" name="age" placeholder="Yaş" required>
-        </div>
-        
-        <div class="input-group">
-          <div class="input-icon">
-            <i class="fas fa-wallet"></i>
-          </div>
-          <input type="number" name="balance" placeholder="Bakiye" required>
         </div>
         
         <div class="input-group">
@@ -58,24 +46,14 @@
           </div>
         </div>
         
-        <div class="input-group">
-          <div class="input-icon">
-            <i class="fas fa-crown"></i>
-          </div>
-          <select name="is_premium" class="premium-select">
-            <option value="1">Premium</option>
-            <option value="0">Normal</option>
-          </select>
-        </div>
-        
         <button type="submit" class="login-button">
-          <span>Kayıt Ol</span>
+          <span>Giriş Yap</span>
           <i class="fas fa-arrow-right"></i>
         </button>
       </form>
 
-            <div class="login-footer">        
-        <p>Zaten hesabınız var mı? <a href="/login">Giriş Yap</a></p>
+      <div class="login-footer">
+        <p>Normal kullanıcı iseniz <a href="/">Buraya Tıklayın</a></p>
       </div>
     </div>
   </div>
@@ -95,9 +73,17 @@
         toggleIcon.classList.add('fa-eye');
       }
     }
+
+    // Form gönderim kontrolü
+    document.getElementById('companyLoginForm').addEventListener('submit', function(event) {
+      // Sadece test için, bu satırı kaldırın
+      // event.preventDefault();
+      
+      const username = document.querySelector('input[name="user_name"]').value;
+      const password = document.querySelector('input[name="password"]').value;
+      
+      console.log('Gönderilen değerler:', { username, password });
+    });
   </script>
-  
-  <!-- JS dosyasını burada yüklüyoruz -->
-  <script src="/static/register.js"></script>
 </body>
-</html>
+</html> 
