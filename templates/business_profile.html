@@ -24,68 +24,55 @@
             position: relative;
         }
         
-        .header h1 {
-            margin: 0;
-            text-align: center;
-            flex-grow: 1;
-            font-size: 22px;
-            font-weight: 500;
-        }
-        
         .back-button {
             color: white;
             font-size: 24px;
             background: none;
             border: none;
             cursor: pointer;
+            text-decoration: none;
+            margin-right: 20px;
         }
         
-        .user-section {
-            padding: 30px 20px;
+        .header-title {
+            margin: 0;
             text-align: center;
+            flex-grow: 1;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .user-profile {
             background-color: white;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
         }
         
         .user-name {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 600;
-            margin: 5px 0;
+            margin: 0;
             color: #333;
         }
         
         .user-email {
-            color: #777;
             font-size: 16px;
-            margin: 5px 0;
+            color: #777;
+            margin: 5px 0 0 0;
         }
         
-        .balance-card {
-            margin: 20px 15px;
-            background: linear-gradient(to right, #FFCC33, #FF9933);
-            border-radius: 10px;
-            padding: 20px;
-            color: white;
-            text-align: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .money-label {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        .balance-amount {
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 10px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
         }
         
         .menu-list {
-            margin: 20px 0;
+            margin: 0;
             padding: 0;
             list-style: none;
             background-color: white;
+            border-bottom: 1px solid #eee;
         }
         
         .menu-item {
@@ -93,6 +80,29 @@
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-section-title {
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .menu-section-icon {
+            margin-right: 10px;
+            color: #EA004B;
         }
         
         .menu-icon {
@@ -100,6 +110,7 @@
             color: #333;
             width: 40px;
             text-align: center;
+            color: #EA004B;
         }
         
         .menu-text {
@@ -109,9 +120,15 @@
             color: #333;
         }
         
+        .menu-value {
+            color: #777;
+            margin-right: 10px;
+            font-size: 15px;
+        }
+        
         .menu-arrow {
             color: #EA004B;
-            font-size: 18px;
+            font-size: 16px;
         }
         
         .footer-buttons {
@@ -124,8 +141,8 @@
             background-color: #EA004B;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 14px 25px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
             flex-basis: 48%;
@@ -133,10 +150,30 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .footer-button:hover {
+            background-color: #C8003F;
         }
         
         .footer-button i {
-            margin-right: 8px;
+            margin-right: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 0;
+            }
+            
+            .user-profile {
+                padding: 30px;
+            }
+            
+            .footer-buttons {
+                width: 60%;
+                margin: 30px auto;
+            }
         }
     </style>
 </head>
@@ -145,100 +182,85 @@
         <a href="/business/home" class="back-button">
             <i class="fas fa-chevron-left"></i>
         </a>
-        <h1>İşletme Hesabım</h1>
     </div>
     
-    <div class="user-section">
-        <div class="user-name">{{ user["user_name"] }}</div>
-        <div class="user-email">{{ user["user_name"] }}@business.foodapp.com</div>
-    </div>
-    
-    <div class="balance-card">
-        <div class="money-label">MONEY</div>
-        <div class="balance-amount">{{ user["balance"] }} ₺</div>
-    </div>
-    
-    <ul class="menu-list">
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-building"></i>
-            </div>
-            <div class="menu-text">İşletme Adı</div>
-            <div class="menu-value">{{ user["user_name"] }}</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
+    <div class="container">
+        <ul class="menu-list">
+            <li class="menu-section-title">
+                <i class="fas fa-building menu-section-icon"></i> İşletme Bilgileri
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="menu-text">İşletme Adı</div>
+                <div class="menu-value">{{ user["user_name"] }}</div>
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <div class="menu-text">İşletme Sahibi</div>
+                <div class="menu-value">{{ user["surname"] }}</div>
+            </li>
+        </ul>
         
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-id-card"></i>
-            </div>
-            <div class="menu-text">Soyadı</div>
-            <div class="menu-value">{{ user["surname"] }}</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
+        <ul class="menu-list">
+            <li class="menu-section-title">
+                <i class="fas fa-cog menu-section-icon"></i> İşletme Yönetimi
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="menu-text">Menü Yönetimi</div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-list-alt"></i>
+                </div>
+                <div class="menu-text">Siparişleri Yönet</div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="menu-text">Satış İstatistikleri</div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </li>
+            
+            <li class="menu-item">
+                <div class="menu-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="menu-text">İşletme Ayarları</div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </li>
+        </ul>
         
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-utensils"></i>
-            </div>
-            <div class="menu-text">Menü Yönetimi</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
-        
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-list-alt"></i>
-            </div>
-            <div class="menu-text">Siparişleri Yönet</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
-        
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="menu-text">Satış İstatistikleri</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
-        
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-wallet"></i>
-            </div>
-            <div class="menu-text">Ödemeler</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
-        
-        <li class="menu-item">
-            <div class="menu-icon">
-                <i class="fas fa-cog"></i>
-            </div>
-            <div class="menu-text">İşletme Ayarları</div>
-            <div class="menu-arrow">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </li>
-    </ul>
-    
-    <div class="footer-buttons">
-        <a href="/business/home" class="footer-button">
-            <i class="fas fa-home"></i> Ana Sayfa
-        </a>
-        <a href="/logout" class="footer-button">
-            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
-        </a>
+        <div class="footer-buttons">
+            <a href="/business/home" class="footer-button">
+                <i class="fas fa-home"></i> Ana Sayfa
+            </a>
+            <a href="/logout" class="footer-button">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </a>
+        </div>
     </div>
 </body>
 </html> 

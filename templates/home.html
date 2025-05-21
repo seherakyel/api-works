@@ -3,189 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kullanıcı Ana Sayfası</title>
-    <link rel="stylesheet" href="/static/login.css">
-    <link rel="stylesheet" href="/static/home.css">
+    <title>Ana Sayfa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            padding: 30px 0 20px;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .search-container {
+            margin-bottom: 40px;
+        }
+        
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            outline: none;
+            transition: box-shadow 0.3s;
+        }
+        
+        .search-box:focus {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 30px 0 20px;
+            color: #333;
+        }
+        
+        .food-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .food-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .food-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .food-info {
+            padding: 20px;
+        }
+        
+        .food-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .food-description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .food-cards {
+                flex-direction: column;
+            }
+            
+            .food-card {
+                min-width: 100%;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+        }
+        
+        .nav-button {
+            background-color: #EA004B;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .nav-button:hover {
+            background-color: #C8003F;
+        }
+        
+        .nav-button i {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="dashboard-header">
-            <div class="header-left">
-                <h1><i class="fas fa-utensils"></i> Kullanıcı Sayfası</h1>
-                <span class="welcome-text">Hoş geldin, <b>{{ user["user_name"] }}</b>!</span>
-            </div>
-            <div class="header-right">
-                <a href="/profile" class="profile-button">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Profilim</span>
-                </a>
-                <a href="/logout" class="logout-button">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Çıkış</span>
-                </a>
-            </div>
+        <div class="navbar">
+            <a href="/profile" class="nav-button">
+                <i class="fas fa-user-circle"></i> Profilim
+            </a>
+            <a href="/logout" class="nav-button">
+                <i class="fas fa-sign-out-alt"></i> Çıkış
+            </a>
         </div>
-
-        <div class="dashboard-body">
-            <div class="dashboard-layout">
-                <div class="quick-sidebar">
-                    <div class="sidebar-title">
-                        <i class="fas fa-rocket"></i> Sipariş Menüsü
-                    </div>
-                    
-                    <div class="sidebar-menu">
-                        <a href="/foods" class="menu-item">
-                            <div class="menu-icon">
-                                <i class="fas fa-utensils"></i>
-                            </div>
-                            <div class="menu-text">
-                                <h4>Yemekler</h4>
-                                <p>Tüm menüyü görüntüle</p>
-                            </div>
-                            <i class="fas fa-chevron-right menu-arrow"></i>
-                        </a>
-                        
-                        <a href="/orders" class="menu-item">
-                            <div class="menu-icon">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="menu-text">
-                                <h4>Siparişlerim</h4>
-                                <p>Sipariş geçmişi</p>
-                            </div>
-                            <i class="fas fa-chevron-right menu-arrow"></i>
-                        </a>
-                        
-                        <a href="/favorites" class="menu-item">
-                            <div class="menu-icon">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                            <div class="menu-text">
-                                <h4>Favorilerim</h4>
-                                <p>Favori yemekleriniz</p>
-                            </div>
-                            <i class="fas fa-chevron-right menu-arrow"></i>
-                        </a>
-                        
-                        <a href="/cart" class="menu-item">
-                            <div class="menu-icon">
-                                <i class="fas fa-shopping-basket"></i>
-                            </div>
-                            <div class="menu-text">
-                                <h4>Sepetim</h4>
-                                <p>Siparişinizi tamamlayın</p>
-                            </div>
-                            <i class="fas fa-chevron-right menu-arrow"></i>
-                        </a>
+        
+        <header>
+            <h1 class="main-title">Lezzetli Seçimler</h1>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Yemek ara...">
+            </div>
+        </header>
+        
+        <main>
+            <h2 class="section-title">Popüler Yemekler</h2>
+            
+            <div class="food-cards">
+                <div class="food-card">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza" class="food-img">
+                    <div class="food-info">
+                        <h3 class="food-name">Karışık Pizza</h3>
+                        <p class="food-description">İtalyan usulü hazırlanan, özel peynir karışımı ve taze malzemelerle süslenmiş lezzetli pizza.</p>
                     </div>
                 </div>
                 
-                <div class="dashboard-main">
-                    <div class="welcome-card">
-                        <div class="welcome-icon">
-                            <i class="fas fa-concierge-bell"></i>
-                        </div>
-                        <div class="welcome-content">
-                            <h2>Sipariş Ver</h2>
-                            <p>Hemen favori yemeklerinizi sipariş edin!</p>
-                        </div>
+                <div class="food-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Burger" class="food-img">
+                    <div class="food-info">
+                        <h3 class="food-name">Deluxe Burger</h3>
+                        <p class="food-description">%100 dana eti, özel soslar, taze sebzeler ve özel ekmeği ile enfes bir burger deneyimi.</p>
                     </div>
-                    
-                    <div class="food-showcase">
-                        <h3 class="section-title"><i class="fas fa-fire"></i> Popüler Lezzetler</h3>
-                        
-                        <div class="food-grid">
-                            <div class="food-card">
-                                <div class="food-image">
-                                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza">
-                                </div>
-                                <div class="food-info">
-                                    <h4>Karışık Pizza</h4>
-                                    <p class="food-price">75 ₺</p>
-                                </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
-                            </div>
-                            
-                            <div class="food-card">
-                                <div class="food-image">
-                                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Burger">
-                                </div>
-                                <div class="food-info">
-                                    <h4>Deluxe Burger</h4>
-                                    <p class="food-price">65 ₺</p>
-                                </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
-                            </div>
-                            
-                            <div class="food-card">
-                                <div class="food-image">
-                                    <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Kebap">
-                                </div>
-                                <div class="food-info">
-                                    <h4>Adana Kebap</h4>
-                                    <p class="food-price">85 ₺</p>
-                                </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
-                            </div>
-                        </div>
+                </div>
+                
+                <div class="food-card">
+                    <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Kebap" class="food-img">
+                    <div class="food-info">
+                        <h3 class="food-name">Adana Kebap</h3>
+                        <p class="food-description">Geleneksel baharatlarla harmanlanmış, ızgarada ustalıkla pişirilmiş Adana kebap.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-
-    <style>
-    .add-to-cart-btn {
-        background-color: #e6007e;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        margin-top: 10px;
-        border-radius: 4px;
-        width: 100%;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .add-to-cart-btn:hover {
-        background-color: #b4006a;
-    }
-    
-    /* Profil ve çıkış butonları için stil tanımları */
-    .profile-button {
-        background-color: #EA004B;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        text-decoration: none;
-        margin-right: 10px;
-    }
-    
-    .profile-button:hover {
-        background-color: #C8003F;
-    }
-    
-    .logout-button {
-        background-color: #EA004B;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        text-decoration: none;
-    }
-    
-    .logout-button:hover {
-        background-color: #C8003F;
-    }
-    </style>
 </body>
 </html>
