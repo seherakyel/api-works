@@ -28,7 +28,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       errorTextEl.innerText = data.message || "Kayıt başarılı! İşletme giriş sayfasına yönlendiriliyorsunuz...";
       
       setTimeout(() => {
-        window.location.href = '/login';
+        window.location.href = '/user/login';
       }, 1500);
     } else {
       messageEl.style.display = 'flex';

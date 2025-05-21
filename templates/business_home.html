@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kullanıcı Ana Sayfası</title>
+    <title>İşletme Yönetim Paneli</title>
     <link rel="stylesheet" href="/static/login.css">
     <link rel="stylesheet" href="/static/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,13 +12,13 @@
     <div class="container">
         <div class="dashboard-header">
             <div class="header-left">
-                <h1><i class="fas fa-utensils"></i> Kullanıcı Sayfası</h1>
+                <h1><i class="fas fa-store"></i> İşletme Yönetim Paneli</h1>
                 <span class="welcome-text">Hoş geldin, <b>{{ user["user_name"] }}</b>!</span>
             </div>
             <div class="header-right">
-                <a href="/profile" class="profile-button">
+                <a href="/business/profile" class="profile-button">
                     <i class="fas fa-user-circle"></i>
-                    <span>Profilim</span>
+                    <span>İşletme Profilim</span>
                 </a>
                 <a href="/logout" class="logout-button">
                     <i class="fas fa-sign-out-alt"></i>
@@ -31,50 +31,50 @@
             <div class="dashboard-layout">
                 <div class="quick-sidebar">
                     <div class="sidebar-title">
-                        <i class="fas fa-rocket"></i> Sipariş Menüsü
+                        <i class="fas fa-cogs"></i> İşletme Yönetimi
                     </div>
                     
                     <div class="sidebar-menu">
-                        <a href="/foods" class="menu-item">
+                        <a href="/business/menu" class="menu-item">
                             <div class="menu-icon">
-                                <i class="fas fa-utensils"></i>
+                                <i class="fas fa-list-alt"></i>
                             </div>
                             <div class="menu-text">
-                                <h4>Yemekler</h4>
-                                <p>Tüm menüyü görüntüle</p>
+                                <h4>Menü Yönetimi</h4>
+                                <p>Ürünler ekle, düzenle, sil</p>
                             </div>
                             <i class="fas fa-chevron-right menu-arrow"></i>
                         </a>
                         
-                        <a href="/orders" class="menu-item">
+                        <a href="/business/orders" class="menu-item">
                             <div class="menu-icon">
-                                <i class="fas fa-shopping-cart"></i>
+                                <i class="fas fa-clipboard-list"></i>
                             </div>
                             <div class="menu-text">
-                                <h4>Siparişlerim</h4>
-                                <p>Sipariş geçmişi</p>
+                                <h4>Sipariş Takibi</h4>
+                                <p>Gelen siparişleri yönet</p>
                             </div>
                             <i class="fas fa-chevron-right menu-arrow"></i>
                         </a>
                         
-                        <a href="/favorites" class="menu-item">
+                        <a href="/business/stats" class="menu-item">
                             <div class="menu-icon">
-                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-chart-line"></i>
                             </div>
                             <div class="menu-text">
-                                <h4>Favorilerim</h4>
-                                <p>Favori yemekleriniz</p>
+                                <h4>İstatistikler</h4>
+                                <p>Satış ve popülerlik raporu</p>
                             </div>
                             <i class="fas fa-chevron-right menu-arrow"></i>
                         </a>
                         
-                        <a href="/cart" class="menu-item">
+                        <a href="/business/settings" class="menu-item">
                             <div class="menu-icon">
-                                <i class="fas fa-shopping-basket"></i>
+                                <i class="fas fa-sliders-h"></i>
                             </div>
                             <div class="menu-text">
-                                <h4>Sepetim</h4>
-                                <p>Siparişinizi tamamlayın</p>
+                                <h4>İşletme Ayarları</h4>
+                                <p>İşletme bilgilerini güncelle</p>
                             </div>
                             <i class="fas fa-chevron-right menu-arrow"></i>
                         </a>
@@ -84,49 +84,66 @@
                 <div class="dashboard-main">
                     <div class="welcome-card">
                         <div class="welcome-icon">
-                            <i class="fas fa-concierge-bell"></i>
+                            <i class="fas fa-utensils"></i>
                         </div>
                         <div class="welcome-content">
-                            <h2>Sipariş Ver</h2>
-                            <p>Hemen favori yemeklerinizi sipariş edin!</p>
+                            <h2>Ürün Yönetimi</h2>
+                            <p>Menünüzü düzenleyin ve satışlarınızı takip edin!</p>
                         </div>
                     </div>
                     
+                    <div class="action-buttons">
+                        <button class="add-product-btn"><i class="fas fa-plus"></i> Yeni Ürün Ekle</button>
+                        <button class="manage-categories-btn"><i class="fas fa-tags"></i> Kategorileri Yönet</button>
+                    </div>
+                    
                     <div class="food-showcase">
-                        <h3 class="section-title"><i class="fas fa-fire"></i> Popüler Lezzetler</h3>
+                        <h3 class="section-title"><i class="fas fa-list"></i> Mevcut Menü</h3>
                         
                         <div class="food-grid">
-                            <div class="food-card">
+                            <div class="food-card admin-card">
                                 <div class="food-image">
                                     <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza">
+                                    <div class="admin-controls">
+                                        <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </div>
                                 <div class="food-info">
                                     <h4>Karışık Pizza</h4>
                                     <p class="food-price">75 ₺</p>
+                                    <span class="food-status active">Aktif</span>
                                 </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
                             </div>
                             
-                            <div class="food-card">
+                            <div class="food-card admin-card">
                                 <div class="food-image">
                                     <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Burger">
+                                    <div class="admin-controls">
+                                        <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </div>
                                 <div class="food-info">
                                     <h4>Deluxe Burger</h4>
                                     <p class="food-price">65 ₺</p>
+                                    <span class="food-status active">Aktif</span>
                                 </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
                             </div>
                             
-                            <div class="food-card">
+                            <div class="food-card admin-card">
                                 <div class="food-image">
                                     <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Kebap">
+                                    <div class="admin-controls">
+                                        <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </div>
                                 <div class="food-info">
                                     <h4>Adana Kebap</h4>
                                     <p class="food-price">85 ₺</p>
+                                    <span class="food-status inactive">Pasif</span>
                                 </div>
-                                <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i> Sepete Ekle</button>
                             </div>
                         </div>
                     </div>
@@ -136,20 +153,68 @@
     </div>
 
     <style>
-    .add-to-cart-btn {
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .add-product-btn, .manage-categories-btn {
         background-color: #e6007e;
         color: white;
         border: none;
-        padding: 8px 12px;
-        margin-top: 10px;
+        padding: 10px 15px;
         border-radius: 4px;
-        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        flex: 1;
+    }
+    .add-product-btn:hover, .manage-categories-btn:hover {
+        background-color: #b4006a;
+    }
+    .admin-card {
+        position: relative;
+    }
+    .admin-controls {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 5px;
+    }
+    .edit-btn, .delete-btn {
+        background: rgba(0,0,0,0.6);
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         transition: background-color 0.3s;
     }
-    .add-to-cart-btn:hover {
-        background-color: #b4006a;
+    .edit-btn:hover {
+        background: rgba(52, 152, 219, 0.9);
+    }
+    .delete-btn:hover {
+        background: rgba(231, 76, 60, 0.9);
+    }
+    .food-status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .active {
+        background-color: #2ecc71;
+        color: white;
+    }
+    .inactive {
+        background-color: #e74c3c;
+        color: white;
     }
     </style>
 </body>
-</html>
+</html> 

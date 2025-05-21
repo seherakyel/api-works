@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import uvicorn
+import logging
 
 from routes.user_routes import router as user_routes
 from routes.food_routes import router as food_routes
@@ -15,6 +17,12 @@ from functions.user import register_user, user_login
 # Aktif kullanıcı için basit bir session oluşturuyoruz
 # Gerçek uygulamada daha güvenli bir session yönetimi kullanılmalıdır
 active_user = {}
+# Kullanıcı tipini (user veya business) izleme
+user_type = ""
+
+# Loglama yapılandırması
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -22,82 +30,156 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-# Giriş sayfası için endpoint
+# İşletme Giriş sayfası için endpoint
 @app.get("/", response_class=HTMLResponse)
-async def show_login_page(request: Request):
+async def redirect_to_login(request: Request):
+    # Ana sayfadan kullanıcı girişine yönlendir
+    logger.info("Ana sayfa isteği, kullanıcı girişine yönlendiriliyor")
+    return RedirectResponse(url="/user/login", status_code=303)
+
+@app.get("/business/login", response_class=HTMLResponse)
+async def show_business_login_page(request: Request):
+    logger.info("İşletme giriş sayfası görüntüleniyor")
     return templates.TemplateResponse("login.html", {"request": request})
 
-
-templates = Jinja2Templates(directory="templates")
-
-
-@app.post("/login", response_class=HTMLResponse)
-async def handle_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
-
+# İşletme girişi işlemi
+@app.post("/business/login")
+async def handle_business_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
+    global active_user, user_type
+    logger.info(f"İşletme girişi denemesi: {user_name}")
+    
     user = user_login(user_name, password)
     if user:
-        return templates.TemplateResponse("home.html", {"request": request, "user": user})
+        # İşletme girişi olduğunu işaretle
+        active_user = user
+        user_type = "business"
+        logger.info(f"İşletme girişi başarılı: {user_name}")
+        
+        # İşletme ana sayfasına yönlendir
+        return RedirectResponse(url="/business/home", status_code=303)
     else:
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
-
+        logger.warning(f"İşletme girişi başarısız: {user_name}")
+        return templates.TemplateResponse("login.html", {"request": request, "error": "İşletme adı veya şifre hatalı."})
 
 @app.get("/register", response_class=HTMLResponse)
 async def show_register_page(request: Request):
+    logger.info("Kayıt sayfası görüntüleniyor")
     return templates.TemplateResponse("register.html", {"request": request})
 
 @app.post("/register", response_class=HTMLResponse)
-async def show_register_page(request: Request, user_name: str = Form(...), surname: str = Form(...), is_premium: int = Form(...), age: int = Form(...), balance: int = Form(...), password: str = Form(...)):
-
-    user = register_user(user_name,surname, is_premium, age,balance, password)
+async def handle_register(request: Request, user_name: str = Form(...), surname: str = Form(...), is_premium: int = Form(...), age: int = Form(...), balance: int = Form(...), password: str = Form(...)):
+    logger.info(f"Kayıt denemesi: {user_name}")
+    user = register_user(user_name, surname, is_premium, age, balance, password)
     if user:
-        return templates.TemplateResponse("company_login.html", {"request": request, "success": f"{user_name} başarıyla kayıt oldu."})
+        logger.info(f"Kayıt başarılı: {user_name}")
+        # Kullanıcı kaydı başarılı olduğunda, kullanıcı giriş sayfasına yönlendir
+        return RedirectResponse(url="/user/login?success=true&username=" + user_name, status_code=303)
+    
+    logger.warning(f"Kayıt başarısız: {user_name}")
     return templates.TemplateResponse("register.html", {"request": request, "Hata": "Kayıt başarısız"})
 
+@app.get("/user/login", response_class=HTMLResponse)
+async def show_user_login_page(request: Request):
+    # URL'den parametreleri al
+    success = request.query_params.get("success", "")
+    username = request.query_params.get("username", "")
+    
+    logger.info("Kullanıcı giriş sayfası görüntüleniyor")
+    
+    # Başarılı kayıt durumunda başarı mesajı göster
+    if success == "true" and username:
+        logger.info(f"Başarılı kayıt mesajı gösteriliyor: {username}")
+        return templates.TemplateResponse("company_login.html", {
+            "request": request, 
+            "success": f"{username} başarıyla kayıt oldu."
+        })
+    
+    return templates.TemplateResponse("company_login.html", {"request": request})
 
-
-
-from routes.food_routes import router as food_router
-
-app.include_router(food_router)
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+@app.post("/user/login")
+async def handle_user_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
+    global active_user, user_type
+    logger.info(f"Kullanıcı girişi denemesi: {user_name}")
+    
+    try:
+        # Önce normal kullanıcıları kontrol edelim
+        user = user_login(user_name, password)
+        
+        if user:
+            # Kullanıcı bilgilerini global değişkene kaydedelim
+            active_user = user
+            # Normal kullanıcı girişi olduğunu belirtelim
+            user_type = "user"
+            logger.info(f"Kullanıcı girişi başarılı: {user_name}")
+            
+            # Kullanıcı bulundu, giriş başarılı - kullanıcı ana sayfasına yönlendir
+            return RedirectResponse(url="/home", status_code=303)
+        
+        # Kullanıcı bulunamadı, hata mesajı göster
+        logger.warning(f"Kullanıcı girişi başarısız: {user_name}")
+        return templates.TemplateResponse("company_login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
+    except Exception as e:
+        logger.error(f"Kullanıcı girişi hatası: {str(e)}")
+        return templates.TemplateResponse("company_login.html", {"request": request, "error": f"Giriş hatası: {str(e)}"})
 
 @app.get("/foods", response_class=HTMLResponse)
 async def show_foods_page(request: Request):
+    logger.info("Yemekler sayfası görüntüleniyor")
     return templates.TemplateResponse("foods.html", {"request": request})
 
+# Kullanıcı ana sayfası
 @app.get("/home", response_class=HTMLResponse)
 async def show_home_page(request: Request):
     # Global değişkenden kullanıcı bilgisini alalım
     user = active_user
     # Eğer kullanıcı bilgisi yoksa varsayılan gönderelim
     if not user:
+        logger.warning("Kullanıcı oturumu bulunamadı, varsayılan değerler kullanılıyor")
         user = {"user_name": "Misafir", "balance": 0}
+    elif user_type != "user":
+        # Kullanıcı türü normal kullanıcı değilse işletme ana sayfasına yönlendir
+        logger.info(f"Kullanıcı türü uyumsuz: {user_type}, işletme sayfasına yönlendiriliyor")
+        return RedirectResponse(url="/business/home", status_code=303)
     
-    print(f"Ana sayfa için kullanıcı: {user.get('user_name', 'Bilinmiyor')}")
+    logger.info(f"Kullanıcı ana sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
     return templates.TemplateResponse("home.html", {"request": request, "user": user})
 
+@app.get("/business/home", response_class=HTMLResponse)
+async def show_business_home(request: Request):
+    # Global değişkenden kullanıcı bilgisini alalım
+    user = active_user
+    # Eğer kullanıcı bilgisi yoksa varsayılan gönderelim
+    if not user:
+        logger.warning("İşletme oturumu bulunamadı, varsayılan değerler kullanılıyor")
+        user = {"user_name": "İşletme Sahibi", "balance": 0}
+    elif user_type != "business":
+        # Kullanıcı türü işletme değilse ana sayfaya yönlendir
+        logger.info(f"Kullanıcı türü uyumsuz: {user_type}, kullanıcı sayfasına yönlendiriliyor")
+        return RedirectResponse(url="/home", status_code=303)
+    
+    logger.info(f"İşletme ana sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
+    return templates.TemplateResponse("business_home.html", {"request": request, "user": user})
 
 # Mevcut router'lar
-# İşletme routerlarını özellikle prefix kullanmadan dahil ediyoruz 
-# Böylece '/company/login' ve benzeri URL'ler doğrudan çalışacak
-app.include_router(company_routes, tags=["Company"])
-
+# Birincil (öncelikli) rotaları kendimiz tanımladık. Diğer endpoint'ler için router'ları include ediyoruz
 app.include_router(user_routes, prefix="/users", tags=["Users"])
 app.include_router(food_routes, prefix="/foods", tags=["Foods"])
 app.include_router(order_routes, prefix="/orders", tags=["Orders"])
 app.include_router(owner_routes, prefix="/owners", tags=["Owners"])
-
-# Eski company router'ı kaldırıldı (prefix="/company" ile olan)
+app.include_router(company_routes, tags=["Company"])
 
 @app.get("/logout")
 async def logout(request: Request):
     # Oturumu temizle
-    global active_user
+    global active_user, user_type
     active_user = {}
+    user_type = ""
+    logger.info("Kullanıcı çıkış yaptı")
     # Ana sayfaya yönlendir
     return RedirectResponse(url="/", status_code=303)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 
 
