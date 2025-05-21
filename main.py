@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -9,12 +9,13 @@ from routes.order_routes import router as order_routes
 from routes.owner_routes import router as owner_routes
 from routes.company_routes import router as company_routes
 
+
+from functions.user import register_user, user_login
+
 app = FastAPI()
 
-# Statik dosyaları tanıt (CSS, JS)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# HTML şablonlarını tanıt (login.html burada olacak)
 templates = Jinja2Templates(directory="templates")
 
 # Giriş sayfası için endpoint
@@ -23,61 +24,31 @@ async def show_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
-
-from fastapi import Form
-
 templates = Jinja2Templates(directory="templates")
-
-@app.get("/register", response_class=HTMLResponse)
-async def show_register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
-
-
-
-@app.post("/register", response_class=HTMLResponse)
-async def handle_register(
-    request: Request,
-    user_name: str = Form(...),
-    surname: str = Form(...),
-    is_premium: int = Form(...),
-    age: int = Form(...),
-    balance: int = Form(...),
-    password: str = Form(...)
-):
-    from functions.user import register_user  # içeri aktar
-    result = register_user(user_name, surname, is_premium, age, balance, password)
-
-    if result == "SUCCESS":
-        user_data = {
-            "user_name": user_name,
-            "surname": surname,
-            "age": age,
-            "balance": balance,
-            "is_premium": is_premium
-        }
-        return templates.TemplateResponse("home.html", {"request": request, "user": user_data})
-
-    elif result == "EXISTS":
-        return templates.TemplateResponse("register.html", {
-            "request": request,
-            "error": "Bu kullanıcı adı zaten alınmış."
-        })
-
-    else:
-        return templates.TemplateResponse("register.html", {
-            "request": request,
-            "error": f"Kayıt sırasında hata oluştu: {result}"
-        })
 
 
 @app.post("/login", response_class=HTMLResponse)
 async def handle_login(request: Request, user_name: str = Form(...), password: str = Form(...)):
-    from functions.user import user_login
+
     user = user_login(user_name, password)
     if user:
         return templates.TemplateResponse("home.html", {"request": request, "user": user})
     else:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
+
+
+@app.get("/register", response_class=HTMLResponse)
+async def show_register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+@app.post("/register", response_class=HTMLResponse)
+async def show_register_page(request: Request, user_name: str = Form(...), surname: str = Form(...), is_premium: int = Form(...), age: int = Form(...), balance: int = Form(...), password: str = Form(...)):
+
+    user = register_user(user_name,surname, is_premium, age,balance, password)
+    if user:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
+    return templates.TemplateResponse("register.html", {"request": request, "Hata": "Kayıt başarısız"})
+
 
 
 # Mevcut router'lar
@@ -87,3 +58,4 @@ app.include_router(order_routes, prefix="/orders", tags=["Orders"])
 app.include_router(owner_routes, prefix="/owners", tags=["Owners"])
 app.include_router(company_routes, prefix="/company", tags=["Company"])
 app.include_router(user_routes, prefix="/users", tags=["Users"])
+

@@ -1,10 +1,32 @@
 import sys
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 from functions.user import (
      user_login,register_user,get_user_by_id, delete_user_by_id, is_premium, get_user_full_info_by_id, update_user,list_all_users
 )
+
+
+
+class RegisterUser(BaseModel):
+    user_name: str
+    surname: str
+    is_premium: int
+    age: int
+    balance: int
+    password: str
+
+
+
+class UpdateUser(BaseModel):
+    user_id: int
+    user_name: Optional[str] = None
+    surname: Optional[str] = None
+    is_premium: Optional[int] = None
+    age: Optional[int] = None
+    balance: Optional[int] = None
+    password:Optional[str] = None
 
 router = APIRouter()
 
@@ -17,19 +39,11 @@ async def user_login_endpoint(user_name: str, password: str):
         raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
     
 
-
 @router.post("/register")
-async def user_register_endpoint(
-    user_name: str,
-    surname: str,
-    is_premium: int,
-    age: int,
-    balance: int,
-    password: str
-):
-    result = register_user(user_name, surname, is_premium, age, balance, password)
+async def user_register_endpoint(user: RegisterUser):
+    result = register_user(user.user_name, user.surname, user.is_premium, user.age, user.balance, user.password)
     if result:
-        return {"message": f"{user_name} başarıyla kayıt oldu."}
+        return JSONResponse(content={"message": f"{user.user_name} başarıyla kayıt oldu."})
     else:
         raise HTTPException(status_code=400, detail="Kayıt işlemi başarısız. Kullanıcı adı alınmış olabilir.")
 
@@ -83,14 +97,6 @@ async def get_user_endpoint(user_id: int):
         raise HTTPException(status_code=500, detail=f"Hata: {str(e)}")
     
 
-class UpdateUser(BaseModel):
-    user_id: int
-    user_name: Optional[str] = None
-    surname: Optional[str] = None
-    is_premium: Optional[int] = None
-    age: Optional[int] = None
-    balance: Optional[int] = None
-    password:Optional[str] = None
 
 @router.put("/update_user") # PUT isteği: Var olan kullanıcıyı güncellemek için kullanılır
 async def update_user_endpoint(user: UpdateUser): # Gelen veri, UpdateUser modeline göre kontrol edilir

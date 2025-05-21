@@ -116,37 +116,36 @@ def user_login(user_name, password):
 
 
 def register_user(user_name, surname, is_premium, age, balance, password):
-    print(">> Fonksiyon çalıştı")
     connection = mysql.connector.connect(**CONFIG)
     if not connection:
         return None
     try:
         cursor = connection.cursor(dictionary=True)
-
-        #  Mevcut kullanıcıyı kontrol et ve sonucu oku
-        check_query = "SELECT * FROM user WHERE user_name = %s"
-        cursor.execute(check_query, (user_name,))
+        # Kullanıcı adı daha önce alınmış mı kontrolü
+        cursor.execute("SELECT * FROM user WHERE user_name = %s", (user_name,))
         existing_user = cursor.fetchone()
 
         if existing_user:
-            print("Bu kullanıcı zaten kayıtlı.")
-            return "EXISTS"
+            print(">> Kullanıcı zaten kayıtlı.")
+            return False
 
-        #  Yeni kullanıcıyı ekle
-        insert_query = """
-        INSERT INTO user(user_name, surname, is_premium, age, balance, password)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(insert_query, (user_name, surname, is_premium, age, balance, password))
+        # Kayıt işlemi
+        cursor.execute("""
+            INSERT INTO user(user_name, surname, is_premium, age, balance, password)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (user_name, surname, is_premium, age, balance, password))
         connection.commit()
-        return "SUCCESS"
+        print("evet")
+        return True
 
     except Exception as e:
-        print("Kayıt hatası:", e)
+       #print(">> HATA:", e)
         return f"ERROR: {e}"
+
     finally:
         cursor.close()
         connection.close()
+#register_user("a","a",1,20,100,"123")
 
 
 
@@ -191,7 +190,7 @@ def list_all_users():
     finally:
         cursor.close()
         connection.close()
-print(list_all_users())
+#print(list_all_users())
 
 #connection.commit() “veritabanındaki değişiklikleri kaydet” anlamına gelir ve sadece INSERT, UPDATE, DELETE gibi işlemlerden sonra kullanılır SELECTte kullanılmaz
 
@@ -219,15 +218,7 @@ def update_user(user_id, user_name, surname, is_premium, age, balance, password)
     finally:
         cursor.close()
         connection.close()
-sonuc = update_user(
-    user_id=19,
-    user_name="Ahmet",
-    surname="Doğan",
-    is_premium=1,
-    age=36,
-    balance=200,
-    password="ahmet123"
-)
+
 #print(sonuc)
 
 
