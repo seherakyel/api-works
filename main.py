@@ -127,6 +127,36 @@ async def show_foods_page(request: Request):
     logger.info("Yemekler sayfası görüntüleniyor")
     return templates.TemplateResponse("foods.html", {"request": request})
 
+# Kullanıcı profil sayfası
+@app.get("/profile", response_class=HTMLResponse)
+async def show_profile_page(request: Request):
+    # Global değişkenden kullanıcı bilgisini alalım
+    user = active_user
+    # Eğer kullanıcı bilgisi yoksa kullanıcı girişine yönlendir
+    if not user:
+        logger.warning("Profil sayfası erişim denemesi: Kullanıcı oturumu bulunamadı")
+        return RedirectResponse(url="/user/login", status_code=303)
+    
+    logger.info(f"Kullanıcı profil sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
+    return templates.TemplateResponse("profile.html", {"request": request, "user": user})
+
+# İşletme profil sayfası
+@app.get("/business/profile", response_class=HTMLResponse)
+async def show_business_profile_page(request: Request):
+    # Global değişkenden kullanıcı bilgisini alalım
+    user = active_user
+    # Eğer kullanıcı bilgisi yoksa işletme girişine yönlendir
+    if not user:
+        logger.warning("İşletme profil sayfası erişim denemesi: Kullanıcı oturumu bulunamadı")
+        return RedirectResponse(url="/business/login", status_code=303)
+    # Kullanıcı türü işletme değilse işletme home'a yönlendir
+    elif user_type != "business":
+        logger.warning(f"İşletme profil sayfası erişim denemesi: Yanlış kullanıcı türü ({user_type})")
+        return RedirectResponse(url="/home", status_code=303)
+    
+    logger.info(f"İşletme profil sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
+    return templates.TemplateResponse("business_profile.html", {"request": request, "user": user})
+
 # Kullanıcı ana sayfası
 @app.get("/home", response_class=HTMLResponse)
 async def show_home_page(request: Request):
@@ -175,7 +205,7 @@ async def logout(request: Request):
     active_user = {}
     user_type = ""
     logger.info("Kullanıcı çıkış yaptı")
-    # Ana sayfaya yönlendir
+    # Ana sayfaya yönlendir (ana sayfa zaten login'e yönlendiriyor)
     return RedirectResponse(url="/", status_code=303)
 
 if __name__ == "__main__":

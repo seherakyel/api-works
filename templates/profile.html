@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesabım</title>
+    <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/static/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .header {
+            background-color: #EA004B;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+            font-size: 22px;
+            font-weight: 500;
+        }
+        
+        .back-button {
+            color: white;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-section {
+            padding: 30px 20px;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .user-name {
+            font-size: 26px;
+            font-weight: 600;
+            margin: 5px 0;
+            color: #333;
+        }
+        
+        .user-email {
+            color: #777;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        
+        .balance-card {
+            margin: 20px 15px;
+            background: linear-gradient(to right, #FFCC33, #FF9933);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .money-label {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .balance-amount {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .menu-list {
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+            background-color: white;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-icon {
+            font-size: 22px;
+            color: #333;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .menu-text {
+            flex-grow: 1;
+            margin-left: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .menu-arrow {
+            color: #EA004B;
+            font-size: 18px;
+        }
+        
+        .premium-badge {
+            background-color: #EA004B;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .footer-buttons {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .footer-button {
+            background-color: #EA004B;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            flex-basis: 48%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        
+        .footer-button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/home" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1>Hesabım</h1>
+    </div>
+    
+    <div class="user-section">
+        <div class="user-name">{{ user["user_name"] }} {{ user["surname"] }}</div>
+        <div class="user-email">{{ user["user_name"] }}@foodapp.com</div>
+    </div>
+    
+    <div class="balance-card">
+        <div class="money-label">MONEY</div>
+        <div class="balance-amount">{{ user["balance"] }} ₺</div>
+    </div>
+    
+    <ul class="menu-list">
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="menu-text">Kullanıcı Adı</div>
+            <div class="menu-value">{{ user["user_name"] }}</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-id-card"></i>
+            </div>
+            <div class="menu-text">Soyadı</div>
+            <div class="menu-value">{{ user["surname"] }}</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-birthday-cake"></i>
+            </div>
+            <div class="menu-text">Yaş</div>
+            <div class="menu-value">{{ user["age"] }}</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="menu-text">Üyelik Tipi</div>
+            <div class="menu-value">
+                {% if user["is_premium"] == 1 %}
+                <span style="color: #EA004B; font-weight: bold;">Premium Üyelik</span>
+                {% else %}
+                Standart Üyelik
+                {% endif %}
+            </div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="menu-text">Bakiye Yükle</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-shopping-basket"></i>
+            </div>
+            <div class="menu-text">Siparişlerim</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="menu-text">Favorilerim</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+        
+        <li class="menu-item">
+            <div class="menu-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="menu-text">Hesap Ayarları</div>
+            <div class="menu-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </li>
+    </ul>
+    
+    <div class="footer-buttons">
+        <a href="/home" class="footer-button">
+            <i class="fas fa-home"></i> Ana Sayfa
+        </a>
+        <a href="/logout" class="footer-button">
+            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+        </a>
+    </div>
+</body>
+</html> 
