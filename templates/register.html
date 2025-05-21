@@ -2,29 +2,101 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kayıt Ol</title>
+  <link rel="stylesheet" href="/static/login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <h2>Kayıt Sayfası</h2>
+  <div class="container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1><i class="fas fa-user-plus"></i> Yeni Kayıt</h1>
+      </div>
 
-  <!-- Hata veya başarı mesajı burada görünecek -->
-  <p id="registerError" style="color: red;"></p>
+      <div id="registerError" class="error-message" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorText"></span>
+      </div>
 
-  <form id="registerForm">
-    <input type="text" name="user_name" placeholder="Kullanıcı Adı" required><br>
-    <input type="text" name="surname" placeholder="Soyad" required><br>
-    <input type="number" name="age" placeholder="Yaş" required><br>
-    <input type="number" name="balance" placeholder="Bakiye" required><br>
-    <input type="password" name="password" placeholder="Şifre" required><br>
+      <form id="registerForm" class="login-form">
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <input type="text" name="user_name" placeholder="Kullanıcı Adı" required>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-user-tag"></i>
+          </div>
+          <input type="text" name="surname" placeholder="Soyad" required>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-birthday-cake"></i>
+          </div>
+          <input type="number" name="age" placeholder="Yaş" required>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <input type="number" name="balance" placeholder="Bakiye" required>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+          </div>
+          <input type="password" name="password" id="password" placeholder="Şifre" required>
+          <div class="password-toggle" onclick="togglePassword()">
+            <i class="fas fa-eye" id="toggleIcon"></i>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="fas fa-crown"></i>
+          </div>
+          <select name="is_premium" class="premium-select">
+            <option value="1">Premium</option>
+            <option value="0">Normal</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="login-button">
+          <span>Kayıt Ol</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
 
-    <select name="is_premium">
-      <option value="1">Premium</option>
-      <option value="0">Normal</option>
-    </select><br>
+      <div class="login-footer">
+        <p>Zaten hesabınız var mı? <a href="/login">Giriş Yap</a></p>
+      </div>
+    </div>
+  </div>
 
-    <button type="submit">Kayıt Ol</button>
-  </form>
-
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+  </script>
+  
   <!-- JS dosyasını burada yüklüyoruz -->
   <script src="/static/register.js"></script>
 </body>

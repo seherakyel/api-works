@@ -17,23 +17,30 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     });
 
     const data = await response.json();
-
     const messageEl = document.getElementById('registerError');
+    const errorTextEl = document.getElementById('errorText');
 
     if (response.ok) {
-      messageEl.style.color = "green";
-      messageEl.innerText = data.message;
+      messageEl.style.display = 'flex';
+      messageEl.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+      messageEl.style.borderLeftColor = '#28a745';
+      errorTextEl.style.color = '#28a745';
+      errorTextEl.innerText = data.message || "Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...";
+      
       setTimeout(() => {
         window.location.href = '/login';
       }, 1500);
     } else {
-      messageEl.style.color = "red";
-      messageEl.innerText = data.detail || "Kayıt başarısız.";
+      messageEl.style.display = 'flex';
+      errorTextEl.innerText = data.detail || "Kayıt başarısız.";
     }
 
   } catch (error) {
-    document.getElementById('registerError').style.color = "red";
-    document.getElementById('registerError').innerText = "Bir hata oluştu. Lütfen tekrar deneyin.";
+    const messageEl = document.getElementById('registerError');
+    const errorTextEl = document.getElementById('errorText');
+    
+    messageEl.style.display = 'flex';
+    errorTextEl.innerText = "Bir hata oluştu. Lütfen tekrar deneyin.";
     console.error('JS Kayıt Hatası:', error);
   }
 });
