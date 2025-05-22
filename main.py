@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request, Form, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 import logging
+import traceback  # Hata izleme için eklenmiştir
+import random
 
 from routes.user_routes import router as user_routes
 from routes.food_routes import router as food_routes
@@ -11,8 +13,8 @@ from routes.order_routes import router as order_routes
 from routes.owner_routes import router as owner_routes
 from routes.company_routes import router as company_routes
 
-
 from functions.user import register_user, user_login
+from functions.food import list_all_foods
 
 # Aktif kullanıcı için basit bir session oluşturuyoruz
 # Gerçek uygulamada daha güvenli bir session yönetimi kullanılmalıdır
@@ -119,8 +121,13 @@ async def handle_user_login(request: Request, user_name: str = Form(...), passwo
         logger.warning(f"Kullanıcı girişi başarısız: {user_name}")
         return templates.TemplateResponse("company_login.html", {"request": request, "error": "Kullanıcı adı veya şifre hatalı."})
     except Exception as e:
+        # Hata detaylarını loglayalım
+        error_details = traceback.format_exc()
         logger.error(f"Kullanıcı girişi hatası: {str(e)}")
-        return templates.TemplateResponse("company_login.html", {"request": request, "error": f"Giriş hatası: {str(e)}"})
+        logger.debug(f"Hata detayları: {error_details}")
+        
+        # Kullanıcıya anlamlı bir hata mesajı gösterelim
+        return templates.TemplateResponse("company_login.html", {"request": request, "error": "Giriş sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin."})
 
 @app.get("/foods", response_class=HTMLResponse)
 async def show_foods_page(request: Request):
@@ -171,8 +178,21 @@ async def show_home_page(request: Request):
         logger.info(f"Kullanıcı türü uyumsuz: {user_type}, işletme sayfasına yönlendiriliyor")
         return RedirectResponse(url="/business/home", status_code=303)
     
-    logger.info(f"Kullanıcı ana sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
-    return templates.TemplateResponse("home.html", {"request": request, "user": user})
+    try:
+        logger.info(f"Kullanıcı ana sayfası gösteriliyor: {user.get('user_name', 'Bilinmiyor')}")
+        return templates.TemplateResponse("home.html", {"request": request, "user": user})
+    except Exception as e:
+        # Hata detaylarını loglayalım
+        error_details = traceback.format_exc()
+        logger.error(f"Ana sayfa gösterilirken hata: {str(e)}")
+        logger.debug(f"Hata detayları: {error_details}")
+        
+        # Kullanıcıya anlamlı bir hata mesajı gösterelim
+        return templates.TemplateResponse("error.html", {
+            "request": request, 
+            "error_title": "Sayfa Görüntülenemedi",
+            "error_message": "Ana sayfa yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+        })
 
 @app.get("/business/home", response_class=HTMLResponse)
 async def show_business_home(request: Request):
@@ -207,6 +227,58 @@ async def logout(request: Request):
     logger.info("Kullanıcı çıkış yaptı")
     # Ana sayfaya yönlendir (ana sayfa zaten login'e yönlendiriyor)
     return RedirectResponse(url="/", status_code=303)
+
+# API endpoint: Rastgele yemek getir
+@app.get("/api/random-food", response_class=JSONResponse)
+async def get_random_food():
+    try:
+        # Tüm yemekleri getir
+        foods = list_all_foods()
+        
+        if not foods or len(foods) == 0:
+            # Eğer veritabanında yemek yoksa örnek veri döndür
+            logger.warning("Veritabanında yemek bulunamadı, örnek veri gönderiliyor")
+            sample_foods = [
+                {"food_name": "Karışık Pizza", "description": "İtalyan usulü hazırlanan, özel peynir karışımı ve taze malzemelerle süslenmiş lezzetli pizza.", "price": 120},
+                {"food_name": "Deluxe Burger", "description": "%100 dana eti, özel soslar, taze sebzeler ve özel ekmeği ile enfes bir burger deneyimi.", "price": 95},
+                {"food_name": "Adana Kebap", "description": "Geleneksel baharatlarla harmanlanmış, ızgarada ustalıkla pişirilmiş Adana kebap.", "price": 130},
+                {"food_name": "Tavuk Döner", "description": "Özel marine edilmiş tavuk eti, taze sebzeler ve özel sosla servis edilen lezzetli döner.", "price": 75},
+                {"food_name": "İzmir Köfte", "description": "Özel baharatlarla hazırlanmış, yanında patates ve sebzelerle servis edilen nefis köfte.", "price": 110}
+            ]
+            random_food = random.choice(sample_foods)
+            return random_food
+        
+        # Rastgele bir yemek seç
+        random_food = random.choice(foods)
+        
+        # Description alanı database'de yoksa, ekliyoruz
+        if "description" not in random_food:
+            food_descriptions = {
+                "Margherita Pizza": "İtalyan mutfağının klasiği, mozarella peyniri ve taze fesleğen yaprakları ile.",
+                "Pepperoni Pizza": "Bol baharatlı pepperoni dilimleri ile zenginleştirilmiş nefis bir pizza.",
+                "Cheeseburger": "Özel soslar ve erimiş peynir ile hazırlanan lezzetli bir hamburger.",
+                "Tavuk Burger": "Marine edilmiş tavuk göğsü ile hazırlanmış, hafif ve lezzetli bir seçenek."
+            }
+            random_food["description"] = food_descriptions.get(random_food["food_name"], "Özel tarifle hazırlanmış lezzetli bir seçim.")
+        
+        # Veriyi döndür
+        formatted_food = {
+            "food_name": random_food["food_name"],
+            "description": random_food.get("description", "Lezzetli bir tercih!"),
+            "price": random_food["price"]
+        }
+        
+        logger.info(f"Rastgele yemek gönderildi: {formatted_food['food_name']}")
+        return formatted_food
+        
+    except Exception as e:
+        logger.error(f"Rastgele yemek API hatası: {str(e)}")
+        # Hata durumunda varsayılan bir yemek gönder
+        return {
+            "food_name": "Günün Menüsü",
+            "description": "Şu anda menü bilgisi alınamadı. Lütfen daha sonra tekrar deneyin.",
+            "price": 99
+        }
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

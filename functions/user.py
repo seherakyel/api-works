@@ -23,7 +23,7 @@ def get_user_by_id(user_id): # id ye göre kullanıcı getir
         return None
     try: # hata çıkarsa yakala
         cursor=connection.cursor(dictionary=True)
-        query = "SELECT user_name,surname FROM food_choice.user WHERE id=%s"# users tablosundan sadece id’si eşleşen kullanıcıyı 
+        query = "SELECT user_name,surname FROM food_choice.user WHERE id=%s"# users tablosundan sadece id'si eşleşen kullanıcıyı 
         cursor.execute(query,(user_id,))  # seçer %s kısmı, daha sonra user_id ile doldurulacak ye
         user=cursor.fetchone() # eşleşen bir kullanıcı varsa onu alır
         return f"{user['user_name']} {user['surname']}"
@@ -89,29 +89,37 @@ def get_user_full_info_by_id(user_id):
 
 
 def user_login(user_name, password):
-    connection = mysql.connector.connect(**CONFIG)
-    if not connection:
-        return None
     try:
-        cursor = connection.cursor(dictionary=True)
-        query = "SELECT * FROM user WHERE user_name = %s AND password = %s"
-        cursor.execute(query, (user_name, password))
-        result = cursor.fetchall()
-        if result:
-            user = result[0]
-            print(f"giris basarili: Hoş geldin {user['user_name']}!")
-            return user
-        else:
-            print("hatali kullanici adi veya sifre.")
+        connection = mysql.connector.connect(**CONFIG)
+        if not connection:
+            print("Veritabanı bağlantısı kurulamadı")
             return None
-    except Exception as e:
-        print("giris islemi basarisiz.")
-        print(f"Hata: {e}")
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = "SELECT * FROM user WHERE user_name = %s AND password = %s"
+            cursor.execute(query, (user_name, password))
+            result = cursor.fetchall()
+            if result:
+                user = result[0]
+                print(f"Giriş başarılı: Hoş geldin {user['user_name']}!")
+                return user
+            else:
+                print("Hatalı kullanıcı adı veya şifre.")
+                return None
+        except mysql.connector.Error as db_err:
+            print(f"Veritabanı işlem hatası: {db_err}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+    except mysql.connector.Error as conn_err:
+        print(f"Veritabanı bağlantı hatası: {conn_err}")
         return None
-    finally:
-        cursor.close()
-        connection.close()
-#print(user_login("Seher", "seher456"))
+    except Exception as e:
+        print(f"Beklenmeyen hata: {e}")
+        return None
 
 
 
@@ -192,7 +200,7 @@ def list_all_users():
         connection.close()
 #print(list_all_users())
 
-#connection.commit() “veritabanındaki değişiklikleri kaydet” anlamına gelir ve sadece INSERT, UPDATE, DELETE gibi işlemlerden sonra kullanılır SELECTte kullanılmaz
+#connection.commit() "veritabanındaki değişiklikleri kaydet" anlamına gelir ve sadece INSERT, UPDATE, DELETE gibi işlemlerden sonra kullanılır SELECTte kullanılmaz
 
 
 def update_user(user_id, user_name, surname, is_premium, age, balance, password):
